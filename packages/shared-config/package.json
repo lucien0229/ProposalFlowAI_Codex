@@ -1,0 +1,11 @@
+{
+  "name": "@proposalflow/shared-config",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@proposalflow/shared-types": "workspace:*"
+  },
+  "exports": {
+    ".": "./index.ts"
+  }
+}
