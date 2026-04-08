@@ -10,7 +10,8 @@
   "dependencies": {
     "next": "15.5.2",
     "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "react-dom": "19.1.1",
+    "@proposalflow/shared-config": "workspace:*"
   },
   "devDependencies": {
     "tailwindcss": "4.1.12",

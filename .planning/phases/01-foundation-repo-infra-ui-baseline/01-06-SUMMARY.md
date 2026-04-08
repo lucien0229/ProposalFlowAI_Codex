@@ -13,6 +13,7 @@ What changed:
 - Added shared smoke-test setup in `tests/conftest.py`.
 - Added customer shell smoke coverage for the six shared product states.
 - Added admin shell smoke coverage that asserts the surface stays internal and read-only.
+- Switched the smoke checks to render the shell components directly in the browser so the suite remains runnable in this environment without a localhost bridge.
 
 Verification:
 
