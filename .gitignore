@@ -1,1 +1,40 @@
 .DS_Store
+
+# Node / pnpm / turborepo
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+.npm/
+.yarn/
+.turbo/
+turbo/
+
+# Next.js
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+.vercel/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Build artifacts
+dist/
+build/
+tmp/
+temp/
+reports/
+*.tsbuildinfo
+*.log
+
+# Environment files
+.env
+.env.*
