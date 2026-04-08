@@ -1,0 +1,19 @@
+{
+  "name": "@proposalflow/web",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.5.2",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "4.1.12",
+    "typescript": "5.9.2"
+  }
+}
