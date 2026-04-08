@@ -6,6 +6,7 @@
 - P1 reserve = boundary reservation or minimal placeholder, not the first release focus.
 - Every customer-facing phase must deliver shipping UI, backend/API, required states, guards, restriction/dependency notices, and page-level verification.
 - Route names, guards, endpoint mappings, acceptance notes, and other implementation-facing details may exist in planning docs, but they must not become the page body itself.
+- When practical, execute future phases in a git worktree so the main branch stays isolated from in-progress phase work.
 
 ## Phase Overview
 
@@ -109,6 +110,16 @@ Let a new user sign in, sign up, recover access, and create the active workspace
 - Data / Worker / Infra: user/session/workspace persistence and any auth-provider mapping needed for the login flow.
 - Verification: sign-up to workspace setup to dashboard handoff smoke test.
 
+**Page Contract**
+
+- Routes: `/auth/sign-in`, `/auth/sign-up`, `/auth/forgot-password`, `/setup/workspace`.
+- Guards: unauthenticated entry allowed; product pages require a resolved workspace; technical callback routes stay non-visual.
+- Page shell usage: auth shell for login flows, setup shell for workspace bootstrap, minimal chrome only.
+- Required states: loading, empty, error, blocked, retry, success.
+- Restriction / dependency notices: workspace setup required before entering product pages.
+- Version / restore interactions: none in this phase.
+- Page-level acceptance checks: the user can reach the active workspace context and return intent is preserved.
+
 **Acceptance**
 
 - A new user can create or access an account and land in a workspace.
@@ -155,6 +166,16 @@ Give the customer a command center for starting new work, resuming open work, an
 - Data / Worker / Infra: opportunity list indexes and workspace-scoped query support.
 - Verification: create/open/search/filter/archive smoke checks.
 
+**Page Contract**
+
+- Routes: `/dashboard`, `/opportunities`.
+- Guards: authenticated workspace-ready access; incomplete setup redirects back to Phase 2.
+- Page shell usage: global customer app shell with stable primary navigation.
+- Required states: loading, empty, error, blocked, retry, success.
+- Restriction / dependency notices: resume-unfinished and archived states must be visible; setup or permission gaps must be explicit.
+- Version / restore interactions: none in this phase.
+- Page-level acceptance checks: the dashboard and list provide a clear command center for new and existing opportunities.
+
 **Acceptance**
 
 - The dashboard and list feel like a product command center, not a metrics dashboard dump.
@@ -200,6 +221,16 @@ Turn raw lead information into a structured opportunity ready for Lead Brief gen
 - Data / Worker / Infra: object storage, worker extraction jobs, file processing state records.
 - Verification: uploaded → processing → ready / failed path, plus retry recovery.
 
+**Page Contract**
+
+- Routes: `/opportunities/:opportunityId`, `/opportunities/:opportunityId/overview`.
+- Guards: authenticated workspace-ready access plus opportunity existence checks.
+- Page shell usage: opportunity shell with header + stepper + action bar, not a standalone spec page.
+- Required states: loading, empty, error, blocked, retry, success, plus file-specific states.
+- Restriction / dependency notices: Lead Brief generation remains blocked until intake inputs and file readiness are sufficient.
+- Version / restore interactions: none in this phase.
+- Page-level acceptance checks: the intake page remains the workflow entry point and cleanly hands off to Lead Brief generation.
+
 **Acceptance**
 
 - Intake route clearly feels like the top of an opportunity container.
@@ -244,6 +275,16 @@ Convert intake into a structured, editable, versioned Lead Brief.
 - Data / Worker / Infra: version snapshot persistence and optimistic concurrency fields.
 - Verification: version list/preview/restore smoke tests and overwrite protection checks.
 
+**Page Contract**
+
+- Routes: `/opportunities/:opportunityId/lead-brief`.
+- Guards: opportunity must exist and the customer must be allowed into the workflow surface.
+- Page shell usage: opportunity shell plus source/output workspace layout.
+- Required states: loading, empty, error, blocked, retry, success, plus `Needs Review`.
+- Restriction / dependency notices: restore, save-version, and regenerate must explain overwrite risk and dependency status.
+- Version / restore interactions: current resource, version history list/detail, preview, restore, and explicit overwrite confirmation are all required.
+- Page-level acceptance checks: the page is clearly a structured workspace, and edits never disappear silently.
+
 **Acceptance**
 
 - Lead Brief can be generated, edited, versioned, previewed, and restored without silent data loss.
@@ -287,6 +328,16 @@ Turn notes and transcripts into proposal-ready intelligence with visible ambigui
 - Backend / API: discovery generate/read/update/save-version/versions/restore endpoints and discovery records support.
 - Data / Worker / Infra: version snapshot storage and any background support needed for structured extraction.
 - Verification: evidence-thin and restore flows, plus no-silent-overwrite smoke tests.
+
+**Page Contract**
+
+- Routes: `/opportunities/:opportunityId/discovery`.
+- Guards: opportunity context required and dependency status must be visible if discovery inputs are thin.
+- Page shell usage: opportunity shell with evidence/source framing and structured output layout.
+- Required states: loading, empty, error, blocked, retry, success, plus not-enough-evidence feedback.
+- Restriction / dependency notices: ambiguity, risk flags, and dependency gaps must be explained in-page.
+- Version / restore interactions: current resource, version history, preview, restore, and overwrite confirmation remain mandatory.
+- Page-level acceptance checks: the page reads like a structured intelligence workspace rather than a transcript reader.
 
 **Acceptance**
 
@@ -334,6 +385,16 @@ Ship the core value page: a rule-constrained, editable, versioned proposal draft
 - Data / Worker / Infra: rules persistence, version snapshots, and any background work needed for generation or export.
 - Verification: dependency gating, overwrite confirmation, and export smoke tests.
 
+**Page Contract**
+
+- Routes: `/opportunities/:opportunityId/proposal-draft`, `/templates-rules`.
+- Guards: proposal draft requires current Lead Brief and base Discovery; templates rules requires authenticated workspace access.
+- Page shell usage: proposal draft uses the opportunity shell; templates and rules uses the global customer shell.
+- Required states: loading, empty, error, blocked, retry, success, plus low-confidence and rules-conflict states.
+- Restriction / dependency notices: block generation when prerequisites are missing and surface effective-rule / override status in the page.
+- Version / restore interactions: current resource, version history, preview, restore, and chapter-level regenerate confirmation are required.
+- Page-level acceptance checks: the page feels like a shipping drafting workspace and not a black-box generator or spec sheet.
+
 **Acceptance**
 
 - Proposal Draft generation is blocked without current Lead Brief and base Discovery.
@@ -378,6 +439,16 @@ Turn the current proposal into concise, contextual follow-up copy.
 - Backend / API: follow-up generate/read/update/save-version/versions/restore endpoints.
 - Data / Worker / Infra: version snapshots and any send/copy utilities.
 - Verification: proposal-context dependency gating and copy smoke tests.
+
+**Page Contract**
+
+- Routes: `/opportunities/:opportunityId/follow-up`.
+- Guards: current Proposal Draft is required before generation is allowed.
+- Page shell usage: opportunity shell with a lighter action surface than Proposal Draft.
+- Required states: loading, empty, error, blocked, retry, success.
+- Restriction / dependency notices: missing proposal context and billing restriction reasons must be explicit.
+- Version / restore interactions: current resource, version history, preview, restore, and copy remain available.
+- Page-level acceptance checks: the page is contextual, professional, and clearly downstream of Proposal Draft.
 
 **Acceptance**
 
@@ -424,6 +495,16 @@ Make commercial state visible and enforce read-only behavior consistently across
 - Data / Worker / Infra: workspace billing snapshot updates and webhook idempotency handling.
 - Verification: trial/paid/expired/past-due/canceled/inactive matrix tests.
 
+**Page Contract**
+
+- Routes: `/billing`.
+- Guards: authenticated workspace access; billing state determines whether the page is read-only or can continue to checkout / portal.
+- Page shell usage: global customer shell with a billing-focused content area.
+- Required states: loading, empty, error, blocked, retry, success.
+- Restriction / dependency notices: `is_generation_allowed`, `restriction_reason`, and next-step billing actions must be visible and readable.
+- Version / restore interactions: none in this phase; billing actions do not use the version system.
+- Page-level acceptance checks: the app explains commercial restrictions without hiding the customer’s data or prior work.
+
 **Acceptance**
 
 - The UI explains what is blocked and why, instead of showing a generic error.
@@ -466,6 +547,16 @@ Provide a minimal configuration surface without turning it into a second admin c
 - Backend / API: minimal settings read/update support.
 - Data / Worker / Infra: workspace and member persistence already established in earlier phases.
 - Verification: settings save and permission checks smoke tests.
+
+**Page Contract**
+
+- Routes: `/settings`.
+- Guards: authenticated workspace access with owner/member permission checks.
+- Page shell usage: global customer shell with low-density configuration content.
+- Required states: loading, empty, error, blocked, retry, success.
+- Restriction / dependency notices: workspace and member permission feedback must be visible, but the page must not become a second admin console.
+- Version / restore interactions: none in this phase.
+- Page-level acceptance checks: settings stays lightweight and never absorbs billing or admin complexity.
 
 **Acceptance**
 
@@ -553,6 +644,16 @@ Reserve the internal control surface without making it the launch focus.
 - Data / Worker / Infra: shared reporting data access and guard wiring.
 - Verification: internal access / forbidden / object-not-found / insufficient-data smoke checks.
 
+**Page Contract**
+
+- Routes: `/admin/auth`, `/admin/overview`, `/admin/workspaces`, `/admin/workspaces/:workspaceId`, `/admin/users`, `/admin/users/:userId`, `/admin/subscriptions`, `/admin/funnels`.
+- Guards: internal auth guard plus internal role guard; customer credentials must not pass through.
+- Page shell usage: separate admin shell with its own navigation and query-preserving drill-downs.
+- Required states: loading, empty, error, insufficient data, forbidden, object not found, retry.
+- Restriction / dependency notices: read-only boundary and commercial-state explanations remain visible; write paths stay out.
+- Version / restore interactions: none in this phase.
+- Page-level acceptance checks: admin remains separately addressable and never leaks into customer navigation or APIs.
+
 **Acceptance**
 
 - Admin remains separately addressable in code, routes, guards, and API space.
@@ -563,4 +664,3 @@ Reserve the internal control surface without making it the launch focus.
 
 - The main risk is admin scope creep.
 - Keep this phase strictly boundary-oriented until the customer MVP is shipped.
-

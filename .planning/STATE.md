@@ -23,5 +23,6 @@ See: `.planning/PROJECT.md` (updated 2026-04-08)
 - `/docs` is the only source of truth.
 - Customer-facing pages must ship as product UI, not spec pages.
 - Version history / restore and billing restriction semantics are first-class product behavior.
+- Future phase execution should prefer git worktrees when practical to isolate the main branch.
 
 *Last updated: 2026-04-08 after new-project initialization*

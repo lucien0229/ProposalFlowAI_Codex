@@ -40,6 +40,7 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 - 数据层使用单 PostgreSQL 主库，不拆 product DB / admin DB。
 - 环境必须按 `local / staging / production` 三层设计，部署对象统一为 `web / admin / api / worker`。
 - `current resource / version history / restore`、`billing / trial / restriction_reason`、`read-only restriction matrix` 都是正式产品语义，不是附带说明。
+- 后续各 phase 执行尽可能优先使用 git worktree 隔离主分支，降低阶段实现对主线的干扰。
 
 ## Constraints
 
@@ -60,6 +61,7 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 | customer-side 采用 opportunity-centered 闭环 | 真实任务是推进单个售前机会，而不是打开一堆 AI 页面 | Pending |
 | customer-facing 页面必须是 shipping UI | 删除 route/API/acceptance 文本后页面仍然成立，才算产品化 | Pending |
 | admin 端首发只做边界预留 | 防止 admin 抢占 customer MVP 的交付和验证资源 | Pending |
+| 后续 phase 尽可能使用 git worktree | 隔离主分支，降低阶段实现互相干扰 | Pending |
 
 ---
 *Last updated: 2026-04-08 after new-project initialization*
