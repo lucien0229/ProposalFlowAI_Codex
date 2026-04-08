@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proposalflow-api"
+version = "0.1.0"
+description = "ProposalFlow AI API service"
+requires-python = ">=3.11"
+dependencies = [
+  "alembic>=1.13.0",
+  "fastapi>=0.115.0",
+  "pydantic>=2.8.0",
+  "sqlalchemy>=2.0.0",
+  "uvicorn>=0.30.0",
+]
+
+[project.scripts]
+proposalflow-api = "app.main:run"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]

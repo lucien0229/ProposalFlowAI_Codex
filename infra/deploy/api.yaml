@@ -1,0 +1,13 @@
+runtime: api
+local:
+  host: api.localhost
+  port: 8000
+  command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+staging:
+  host: api.staging.localhost
+  port: 8000
+  command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+production:
+  host: api.proposalflow.ai
+  port: 8000
+  command: uvicorn app.main:app --host 0.0.0.0 --port 8000

@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proposalflow-worker"
+version = "0.1.0"
+description = "ProposalFlow AI internal worker"
+requires-python = ">=3.11"
+
+[project.scripts]
+proposalflow-worker = "main:main"
+
+[tool.setuptools]
+package-dir = {"" = "."}

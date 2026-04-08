@@ -1,0 +1,13 @@
+runtime: admin
+local:
+  host: admin.localhost
+  port: 3001
+  command: pnpm --dir apps/admin dev
+staging:
+  host: admin.staging.localhost
+  port: 3001
+  command: pnpm --dir apps/admin start
+production:
+  host: admin.proposalflow.ai
+  port: 3001
+  command: pnpm --dir apps/admin start

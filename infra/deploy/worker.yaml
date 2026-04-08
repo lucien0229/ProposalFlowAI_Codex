@@ -1,0 +1,13 @@
+runtime: worker
+local:
+  host: internal
+  port: 0
+  command: python -m main
+staging:
+  host: internal
+  port: 0
+  command: python -m main
+production:
+  host: internal
+  port: 0
+  command: python -m main

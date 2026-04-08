@@ -1,0 +1,13 @@
+runtime: web
+local:
+  host: app.localhost
+  port: 3000
+  command: pnpm --dir apps/web dev
+staging:
+  host: app.staging.localhost
+  port: 3000
+  command: pnpm --dir apps/web start
+production:
+  host: app.proposalflow.ai
+  port: 3000
+  command: pnpm --dir apps/web start
