@@ -77,6 +77,15 @@ Establish the repo, application boundaries, shared packages, environment layers,
 - Admin must remain a placeholder scaffold at this stage, not a second product.
 - Do not let shell work turn into page-content work.
 
+**Plans:** 4 plans
+
+**Plans**
+
+- [ ] `01-01-PLAN.md` — bootstrap the root workspace and frontend app manifests
+- [ ] `01-02-PLAN.md` — define the shared contract packages and explicit cross-app constants
+- [ ] `01-03-PLAN.md` — build the deploy skeleton, API/worker runtime, and migration baseline
+- [ ] `01-04-PLAN.md` — ship the customer/admin shells and shell smoke tests
+
 ## Phase 2 — Auth & Workspace Setup
 
 **Goal**
