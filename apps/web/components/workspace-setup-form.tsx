@@ -26,6 +26,33 @@ type WorkspaceState = {
   tonePreference: WorkspaceTonePreference;
 };
 
+const INDUSTRY_LABELS: Partial<Record<WorkspaceIndustryType, string>> = {
+  web_development_agency: "Web development agency",
+  product_ux_agency: "Product and UX agency",
+};
+
+const TEMPLATE_LABELS: Partial<Record<WorkspaceTemplateKey, string>> = {
+  development_agency: "Development agency",
+  product_ux_agency: "Product and UX agency",
+};
+
+const TONE_LABELS: Partial<Record<WorkspaceTonePreference, string>> = {
+  balanced: "Balanced",
+  direct: "Direct",
+  consultative: "Consultative",
+};
+
+function formatFallbackLabel(value: string) {
+  return value
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function getOptionLabel<T extends string>(labels: Partial<Record<T, string>>, value: T) {
+  return labels[value] ?? formatFallbackLabel(value);
+}
+
 function getDefaults(industryType: WorkspaceIndustryType) {
   return WORKSPACE_SETUP_DEFAULTS_BY_INDUSTRY[industryType];
 }
@@ -121,7 +148,7 @@ export function WorkspaceSetupForm({ returnUrl }: WorkspaceSetupFormProps) {
         >
           {WORKSPACE_INDUSTRY_VALUES.map((value) => (
             <option key={value} value={value}>
-              {value.replaceAll("_", " ")}
+              {getOptionLabel(INDUSTRY_LABELS, value)}
             </option>
           ))}
         </select>
@@ -136,7 +163,7 @@ export function WorkspaceSetupForm({ returnUrl }: WorkspaceSetupFormProps) {
           >
             {WORKSPACE_TEMPLATE_VALUES.map((value) => (
               <option key={value} value={value}>
-                {value.replaceAll("_", " ")}
+                {getOptionLabel(TEMPLATE_LABELS, value)}
               </option>
             ))}
           </select>
@@ -155,7 +182,7 @@ export function WorkspaceSetupForm({ returnUrl }: WorkspaceSetupFormProps) {
           >
             {WORKSPACE_TONE_PREFERENCE_VALUES.map((value) => (
               <option key={value} value={value}>
-                {value}
+                {getOptionLabel(TONE_LABELS, value)}
               </option>
             ))}
           </select>

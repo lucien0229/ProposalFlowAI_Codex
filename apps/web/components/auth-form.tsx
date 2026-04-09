@@ -52,6 +52,34 @@ function buildGoogleHref(returnUrl: string | null): string {
   return `${AUTH_ROUTE_PATHS.googleStart}${url.search}`;
 }
 
+function GoogleMark() {
+  return (
+    <svg
+      className="auth-form__google-mark"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="#4285F4"
+        d="M23.49 12.27c0-.79-.07-1.55-.2-2.27H12v4.3h6.45a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.26-2.08 3.56-5.15 3.56-8.65Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-3c-1.07.72-2.44 1.14-4.05 1.14-3.12 0-5.77-2.1-6.71-4.93H1.28v3.1A11.98 11.98 0 0 0 12 24Z"
+      />
+      <path
+        fill="#FBBC04"
+        d="M5.29 14.3A7.2 7.2 0 0 1 4.91 12c0-.8.14-1.57.38-2.3V6.6H1.28A11.98 11.98 0 0 0 0 12c0 1.93.46 3.76 1.28 5.4l4.01-3.1Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.77c1.76 0 3.34.61 4.58 1.8l3.44-3.44C17.94 1.15 15.24 0 12 0 7.31 0 3.27 2.69 1.28 6.6l4.01 3.1C6.23 6.87 8.88 4.77 12 4.77Z"
+      />
+    </svg>
+  );
+}
+
 export function AuthForm({ variant, returnUrl }: AuthFormProps) {
   const router = useRouter();
   const [state, setState] = useState<FormState>({
@@ -144,9 +172,7 @@ export function AuthForm({ variant, returnUrl }: AuthFormProps) {
       {variant !== "forgot-password" ? (
         <div className="auth-form__lead">
           <a className="auth-form__google" href={googleHref}>
-            <span className="auth-form__google-mark" aria-hidden="true">
-              G
-            </span>
+            <GoogleMark />
             <span>{labels.googleLabel}</span>
           </a>
 

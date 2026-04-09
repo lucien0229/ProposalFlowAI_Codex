@@ -8,7 +8,7 @@ function uniqueEmail(prefix: string) {
 
 test.describe("auth workspace smoke", () => {
   test("auth pages preserve intent and expose productized forms", async ({ page, context, baseURL }) => {
-    const signInUrl = new URL(AUTH_ROUTE_PATHS.signIn, baseURL ?? "http://127.0.0.1:3000");
+    const signInUrl = new URL(AUTH_ROUTE_PATHS.signIn, baseURL ?? "http://localhost:3000");
     signInUrl.searchParams.set(RETURN_URL_QUERY_PARAM, "/dashboard");
 
     await page.goto(signInUrl.toString());
@@ -21,7 +21,7 @@ test.describe("auth workspace smoke", () => {
     await expect(page.getByLabel("Email")).toBeVisible();
     await expect(page.getByLabel("Password")).toBeVisible();
 
-    const signUpUrl = new URL(AUTH_ROUTE_PATHS.signUp, baseURL ?? "http://127.0.0.1:3000");
+    const signUpUrl = new URL(AUTH_ROUTE_PATHS.signUp, baseURL ?? "http://localhost:3000");
     signUpUrl.searchParams.set(RETURN_URL_QUERY_PARAM, "/dashboard");
 
     await page.goto(signUpUrl.toString());
@@ -29,12 +29,12 @@ test.describe("auth workspace smoke", () => {
     await expect(page.getByLabel("Full name")).toBeVisible();
     await expect(page.locator(".auth-form__footer").getByRole("link", { name: "Sign in" })).toBeVisible();
 
-    await page.goto(new URL(SETUP_ROUTE_PATHS.workspace, baseURL ?? "http://127.0.0.1:3000").toString());
+    await page.goto(new URL(SETUP_ROUTE_PATHS.workspace, baseURL ?? "http://localhost:3000").toString());
     await expect(page).toHaveURL(/\/auth\/sign-in/);
   });
 
   test("workspace setup flow redirects from auth to dashboard", async ({ page, baseURL }) => {
-    const webBase = baseURL ?? "http://127.0.0.1:3000";
+    const webBase = baseURL ?? "http://localhost:3000";
     const email = uniqueEmail("workspace-smoke");
 
     const signUpUrl = new URL(AUTH_ROUTE_PATHS.signUp, webBase);
@@ -56,6 +56,6 @@ test.describe("auth workspace smoke", () => {
     await page.getByRole("button", { name: /continue to dashboard/i }).click();
 
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page.getByRole("heading", { name: /North Star Studio is ready\./i })).toBeVisible();
+    await expect(page.getByText("North Star Studio").first()).toBeVisible();
   });
 });

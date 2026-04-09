@@ -8,7 +8,7 @@ function uniqueEmail(prefix: string) {
 
 test.describe("workspace guard smoke", () => {
   test("redirects unauthenticated business traffic to sign-in", async ({ page, baseURL }) => {
-    const dashboardUrl = new URL("/dashboard", baseURL ?? "http://127.0.0.1:3000");
+    const dashboardUrl = new URL("/dashboard", baseURL ?? "http://localhost:3000");
     await page.goto(dashboardUrl.toString());
 
     await expect(page).toHaveURL(/\/auth\/sign-in/);
@@ -17,7 +17,7 @@ test.describe("workspace guard smoke", () => {
   });
 
   test("redirects incomplete workspaces to setup before dashboard", async ({ page, baseURL }) => {
-    const webBase = baseURL ?? "http://127.0.0.1:3000";
+    const webBase = baseURL ?? "http://localhost:3000";
     const signUpUrl = new URL(AUTH_ROUTE_PATHS.signUp, webBase);
     const email = uniqueEmail("guard-smoke");
 
