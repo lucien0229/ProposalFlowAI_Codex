@@ -10,7 +10,7 @@
 - **产品定位**：AI pre-proposal workflow copilot
 - **设计目标**：建立稳定的“售前工作流控制台”气质，而不是传统 proposal 展示工具气质
 - **默认语言**：English-first（本文档中文描述，界面文案默认按英文产品设计）
-- **默认平台**：Web first；优先桌面端与 laptop 宽度体验，同时保持基础响应式可用
+- **默认平台**：Desktop / laptop web app only；仅面向桌面端与 laptop 浏览器体验，不做 mobile 或 tablet 产品适配
 - **设计阶段定位**：本 Brief 不是重新定义产品，而是把已冻结的客户侧页面结构、流程、状态与约束翻译成可直接执行的页面设计输入
 
 ---
@@ -63,6 +63,7 @@ Pencil 设计时应始终围绕以下事实展开：
 7. **受限动作矩阵**：在 `trial_expired / past_due / canceled / inactive` 下，统一进入 **工作流只读模式**，阻断 `generate`、`regenerate`、`save current`、`save-version`、`restore`、`export`，但允许查看历史数据与进入 Billing / Upgrade / Manage Billing。
 8. **模板推荐边界**：首版不做复杂自动推荐，只保留 `industry_type → 默认模板` 与手动切换。
 9. **成员可见范围**：首版 `owner / member` 默认都可查看当前 workspace 下的全部 opportunities，不在 Dashboard / Opportunities 中引入“仅参与可见”前提。
+10. **平台边界**：本产品只做 desktop / laptop web app，不做 mobile 或 tablet 产品体验；设计稿不应补充移动端或平板端专用布局、交互或验收要求。
 
 ---
 

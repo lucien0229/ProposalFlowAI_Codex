@@ -251,6 +251,17 @@ Turn raw lead information into a structured opportunity ready for Lead Brief gen
 - Worker latency can make the page feel stalled if feedback is weak.
 - Do not leak brief or discovery output onto the intake surface.
 
+**Plans:** 6 plans
+
+**Plans**
+
+- [ ] `04-01-PLAN.md` — freeze Phase 4 contracts, dependencies, and Wave 0 harness repair
+- [ ] `04-02-PLAN.md` — author failing API/browser specs and capture the real RED state
+- [ ] `04-03-PLAN.md` — implement overview detail/update, inputs CRUD-lite, and server gate behavior
+- [ ] `04-04-PLAN.md` — implement file upload, extraction worker, and explicit retry lifecycle
+- [ ] `04-05-PLAN.md` — build the overview shell, explicit input client wiring, and draft-preserving editing UI
+- [ ] `04-06-PLAN.md` — finish file-state UI, generate handoff, and final browser/human verification
+
 ## Phase 5 — Lead Brief Workspace
 
 **Goal**

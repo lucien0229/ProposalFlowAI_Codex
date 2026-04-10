@@ -14,7 +14,12 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Email/password sign-in, sign-up, and password recovery entry points are live — Phase 2
+- ✓ Session persistence restores the intended destination after auth/setup handoff — Phase 2
+- ✓ Workspace setup captures name, industry, template, and tone defaults, then creates the active workspace context — Phase 2
+- ✓ Product pages stay blocked until workspace setup is complete — Phase 2
+- ✓ Dashboard provides clear entry points to start a new opportunity and resume unfinished work — Phase 3
+- ✓ Opportunities list supports search, filter, sort, archive, and opening an opportunity — Phase 3
 
 ### Active
 
@@ -24,6 +29,7 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 - Billing / Trial / restriction_reason / 只读限制矩阵必须在产品与 API 两侧同时成立。
 - 工程必须采用单仓 monorepo，并严格区分 `apps/web`、`apps/admin`、`apps/api`、`apps/worker` 与共享 packages。
 - Admin 端本轮只做边界预留或最小占位，不作为首发主体。
+- 产品交付范围限定为 desktop / laptop web app，不做 mobile 或 tablet 产品体验。
 
 ### Out of Scope
 
@@ -31,6 +37,7 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 - 复杂多租户权限矩阵、微服务拆分、复杂事件总线、向量检索或独立 analytics 数据仓。
 - 把 admin 端塞进 web，或者把 admin 端做成首发主线。
 - 把 customer-facing page 做成 spec sheet、contract sheet、QA checklist。
+- 为 mobile 或 tablet 单独设计、实现、验收产品体验。
 
 ## Context
 
@@ -47,6 +54,7 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 - **Source of Truth**: 冻结文档以 `/docs` 为唯一事实来源，不能靠猜测补产品边界。
 - **Repo Shape**: 必须是单仓 monorepo，且目录边界固定为 `apps/web`、`apps/admin`、`apps/api`、`apps/worker`、`packages/shared-types`、`packages/shared-schemas`、`packages/shared-config`。
 - **UI Standard**: customer-facing 页面必须输出 shipping UI，shared states 只是正式产品状态，不是规格说明层。
+- **Platform Scope**: MVP 仅面向 desktop / laptop 浏览器，不要求 mobile 或 tablet 产品级适配。
 - **Data Model**: 单 PostgreSQL 主库，`workspace` 是最小租户边界，`opportunity` 是核心业务容器。
 - **Deployment**: local / staging / production 必须同构设计，staging 不能跳过，不能直接按 production 思路硬推。
 - **Integrations**: Auth、OpenAI、Stripe、文件处理和 worker 都必须纳入实施计划。
@@ -56,12 +64,12 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| 单仓 monorepo + `apps/web` / `apps/admin` / `apps/api` / `apps/worker` | 共享类型、schema、鉴权、部署基线，且便于 0→1 交付 | Pending |
+| 单仓 monorepo + `apps/web` / `apps/admin` / `apps/api` / `apps/worker` | 共享类型、schema、鉴权、部署基线，且便于 0→1 交付 | ✓ Good |
 | 单 PostgreSQL 主库 | 保持事务一致性并降低 MVP 复杂度 | Pending |
-| customer-side 采用 opportunity-centered 闭环 | 真实任务是推进单个售前机会，而不是打开一堆 AI 页面 | Pending |
-| customer-facing 页面必须是 shipping UI | 删除 route/API/acceptance 文本后页面仍然成立，才算产品化 | Pending |
-| admin 端首发只做边界预留 | 防止 admin 抢占 customer MVP 的交付和验证资源 | Pending |
-| 后续 phase 尽可能使用 git worktree | 隔离主分支，降低阶段实现互相干扰 | Pending |
+| customer-side 采用 opportunity-centered 闭环 | 真实任务是推进单个售前机会，而不是打开一堆 AI 页面 | ✓ Good |
+| customer-facing 页面必须是 shipping UI | 删除 route/API/acceptance 文本后页面仍然成立，才算产品化 | ✓ Good |
+| admin 端首发只做边界预留 | 防止 admin 抢占 customer MVP 的交付和验证资源 | ✓ Good |
+| 后续 phase 尽可能使用 git worktree | 隔离主分支，降低阶段实现互相干扰 | ✓ Good |
 
 ---
-*Last updated: 2026-04-08 after new-project initialization*
+*Last updated: 2026-04-09 after Phase 3 closeout*

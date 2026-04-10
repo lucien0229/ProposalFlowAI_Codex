@@ -54,7 +54,7 @@ def _build_setup_redirect(return_url: str | None) -> str:
 
 def _build_business_redirect(return_url: str | None) -> str:
     if _is_safe_return_url(return_url):
-      return return_url or BUSINESS_ROUTE_DEFAULT
+        return return_url or BUSINESS_ROUTE_DEFAULT
     return BUSINESS_ROUTE_DEFAULT
 
 

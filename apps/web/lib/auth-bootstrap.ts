@@ -43,7 +43,11 @@ const runtimeEnv = globalThis as typeof globalThis & {
 const DEFAULT_API_BASE_URL =
   runtimeEnv.process?.env?.NEXT_PUBLIC_API_BASE_URL ??
   runtimeEnv.process?.env?.API_BASE_URL ??
-  "http://127.0.0.1:8000";
+  (runtimeEnv.process?.env?.NODE_ENV === "production"
+    ? (() => {
+        throw new Error("NEXT_PUBLIC_API_BASE_URL or API_BASE_URL is required for production requests.");
+      })()
+    : "http://127.0.0.1:8000");
 
 export function getApiUrl(path: string, baseUrl: string = DEFAULT_API_BASE_URL): string {
   return new URL(path, baseUrl).toString();

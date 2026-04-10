@@ -34,7 +34,11 @@ test.describe("auth-setup", () => {
     await page.getByRole("button", { name: /continue to dashboard/i }).click();
 
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page.getByText("North Star Studio").first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+    await expect(page.getByText("North Star Studio")).toBeVisible();
+    await expect(
+      page.locator(".product-page-header__actions").getByRole("button", { name: "New opportunity" }),
+    ).toBeVisible();
   });
 
   test("surfaces invalid login and recovery feedback visibly", async ({ page, baseURL }) => {

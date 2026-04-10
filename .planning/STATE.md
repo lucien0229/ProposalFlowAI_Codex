@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed phase 2 execution
-last_updated: "2026-04-09T03:28:11.656Z"
-last_activity: 2026-04-09 -- Phase 02 execution completed
+status: executing
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-04-10T02:25:55.827Z"
+last_activity: 2026-04-10
 progress:
-  total_phases: 2
+  total_phases: 4
   completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 18
+  completed_plans: 16
   percent: 100
 ---
 
@@ -22,14 +22,14 @@ See: `.planning/PROJECT.md` (updated 2026-04-08)
 
 **Core value:** 把碎片化售前信息变成可以持续推进、可以回看版本、可以解释限制原因的 proposal-ready 工作流。
 
-**Current focus:** Phase 02 — auth-workspace-setup
+**Current focus:** Phase 4 — opportunity-intake-file-processing
 
 ## Current Position
 
-Phase: 02 (auth-workspace-setup) — COMPLETE
-Plan: 3 of 3 complete
-Status: Completed Phase 02
-Last activity: 2026-04-09 -- Phase 02 execution completed
+Phase: 4 (opportunity-intake-file-processing) — EXECUTING
+Plan: 3 of 6
+Status: Ready to execute
+Last activity: 2026-04-10
 
 Progress: [██████████] 100%
 
@@ -54,6 +54,8 @@ Progress: [██████████] 100%
 
 *Updated after each plan completion*
 | Phase 1 P01 | 18 | 2 tasks | 9 files |
+| Phase 04 P01 | 13 | 2 tasks | 13 files |
+| Phase 04 P02 | 26 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -63,6 +65,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - [Phase 1] pnpm workspace + Turbo root, separate web/admin app packages, no packages/ui
+- [Phase 04]: Shared-config now exports both executable D-30 builders and literal route templates for Phase 4.
+- [Phase 04]: Use a dedicated Playwright overview helper with explicit route-state and selector seams to lock the Phase 4 UI contract before implementation begins.
 
 ### Pending Todos
 
@@ -74,8 +78,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-09 03:28 UTC
-Stopped at: Completed phase 2 execution
+Last session: 2026-04-10T02:25:55.821Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None
 
 *Updated after phase 02 execution*

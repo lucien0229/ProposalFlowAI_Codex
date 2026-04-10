@@ -1,15 +1,7 @@
-import type { ProductState } from "@proposalflow/shared-types";
-import { PRODUCT_STATES } from "@proposalflow/shared-types";
+import { redirect } from "next/navigation";
 
-import { AppShell } from "../components/app-shell";
-import { StatusPanel } from "../components/status-panel";
+import { BUSINESS_ROUTE_PATHS } from "@proposalflow/shared-config";
 
 export default function Page() {
-  const state: ProductState = PRODUCT_STATES.includes("success") ? "success" : PRODUCT_STATES[0];
-
-  return (
-    <AppShell state={state}>
-      <StatusPanel state={state} />
-    </AppShell>
-  );
+  redirect(BUSINESS_ROUTE_PATHS.dashboard);
 }

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { BUSINESS_ROUTE_PATHS, RETURN_URL_QUERY_PARAM, SETUP_ROUTE_PATHS } from "@proposalflow/shared-config";
+import {
+  BUSINESS_ROUTE_PATHS,
+  GUARDED_BUSINESS_ROUTE_PREFIXES,
+  RETURN_URL_QUERY_PARAM,
+  SETUP_ROUTE_PATHS,
+} from "@proposalflow/shared-config";
 import {
   fetchAuthBootstrap,
   isBusinessReturnUrl,
@@ -13,7 +18,7 @@ function buildReturnTarget(request: NextRequest): string | null {
   if (isSafeReturnUrl(returnUrl) && isBusinessReturnUrl(returnUrl)) {
     return returnUrl;
   }
-  return request.nextUrl.pathname;
+  return `${request.nextUrl.pathname}${request.nextUrl.search}`;
 }
 
 export async function middleware(request: NextRequest) {
@@ -53,14 +58,18 @@ export async function middleware(request: NextRequest) {
     );
   }
 
-  if (pathname === BUSINESS_ROUTE_PATHS.dashboard || pathname.startsWith("/opportunities")) {
+  if (
+    GUARDED_BUSINESS_ROUTE_PREFIXES.some((prefix) => {
+      return pathname === prefix || pathname.startsWith(`${prefix}/`);
+    })
+  ) {
     if (bootstrap.workspace_setup_required) {
       const setupUrl = new URL(SETUP_ROUTE_PATHS.workspace, request.url);
       const returnUrl = request.nextUrl.searchParams.get(RETURN_URL_QUERY_PARAM);
       if (isSafeReturnUrl(returnUrl) && isBusinessReturnUrl(returnUrl)) {
         setupUrl.searchParams.set(RETURN_URL_QUERY_PARAM, returnUrl);
       } else {
-        setupUrl.searchParams.set(RETURN_URL_QUERY_PARAM, pathname);
+        setupUrl.searchParams.set(RETURN_URL_QUERY_PARAM, `${pathname}${request.nextUrl.search}`);
       }
       return NextResponse.redirect(setupUrl);
     }

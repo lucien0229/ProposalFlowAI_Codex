@@ -3,11 +3,26 @@ local:
   host: app.localhost
   port: 3000
   command: pnpm --dir apps/web dev
+  environment:
+    APP_ENV: local
+    NEXT_PUBLIC_APP_ENV: local
+    NEXT_PUBLIC_API_BASE_URL: http://api.localhost:8000
+    API_BASE_URL: http://api.localhost:8000
 staging:
   host: app.staging.localhost
   port: 3000
   command: pnpm --dir apps/web start
+  environment:
+    APP_ENV: staging
+    NEXT_PUBLIC_APP_ENV: staging
+    NEXT_PUBLIC_API_BASE_URL: http://api.staging.localhost:8000
+    API_BASE_URL: http://api.staging.localhost:8000
 production:
   host: app.proposalflow.ai
   port: 3000
   command: pnpm --dir apps/web start
+  environment:
+    APP_ENV: production
+    NEXT_PUBLIC_APP_ENV: production
+    NEXT_PUBLIC_API_BASE_URL: http://api.proposalflow.ai:8000
+    API_BASE_URL: http://api.proposalflow.ai:8000

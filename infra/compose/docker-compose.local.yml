@@ -1,3 +1,16 @@
+x-proposalflow-local-app-env: &proposalflow-local-app-env
+  APP_ENV: local
+  NEXT_PUBLIC_APP_ENV: local
+  NEXT_PUBLIC_API_BASE_URL: http://api.localhost:8000
+  API_BASE_URL: http://api.localhost:8000
+  OBJECT_STORAGE_BACKEND: s3
+  OBJECT_STORAGE_BUCKET: proposalflow-intake-local
+  OBJECT_STORAGE_ENDPOINT_URL: http://minio:9000
+  OBJECT_STORAGE_ACCESS_KEY_ID: proposalflow
+  OBJECT_STORAGE_SECRET_ACCESS_KEY: proposalflow123
+  OBJECT_STORAGE_REGION_NAME: us-east-1
+  OBJECT_STORAGE_USE_PATH_STYLE: "1"
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -15,6 +28,12 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
     volumes:
       - redis_data:/data
 
@@ -27,6 +46,12 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     volumes:
       - minio_data:/data
 

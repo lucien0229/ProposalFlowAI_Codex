@@ -9,7 +9,12 @@ from sqlalchemy import and_, func, insert, or_, select, update
 from sqlalchemy.engine import Connection, RowMapping
 
 from app.account_models import users_table
-from app.opportunity_models import opportunities_table
+from app.opportunity_models import (
+    opportunity_file_assets_table,
+    opportunity_file_processing_jobs_table,
+    opportunity_inputs_table,
+    opportunities_table,
+)
 
 
 class InvalidOpportunityCursor(ValueError):
@@ -75,6 +80,26 @@ def create_opportunity(
         workspace_id=record["workspace_id"],
         opportunity_id=record["id"],
     )
+
+
+def update_opportunity_context(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+    values: dict[str, Any],
+) -> RowMapping[str, Any] | None:
+    connection.execute(
+        update(opportunities_table)
+        .where(
+            and_(
+                opportunities_table.c.workspace_id == workspace_id,
+                opportunities_table.c.id == opportunity_id,
+            )
+        )
+        .values(**values)
+    )
+    return get_opportunity(connection, workspace_id=workspace_id, opportunity_id=opportunity_id)
 
 
 def get_opportunity(
@@ -276,3 +301,317 @@ def count_needs_attention_opportunities(
     if not restricted:
         query = query.where(_needs_attention_clause())
     return connection.execute(query).scalar_one()
+
+
+def list_opportunity_inputs(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+) -> list[RowMapping[str, Any]]:
+    query = (
+        select(opportunity_inputs_table)
+        .select_from(
+            opportunity_inputs_table.join(
+                opportunities_table,
+                opportunities_table.c.id == opportunity_inputs_table.c.opportunity_id,
+            )
+        )
+        .where(
+            and_(
+                opportunities_table.c.workspace_id == workspace_id,
+                opportunities_table.c.id == opportunity_id,
+            )
+        )
+        .order_by(opportunity_inputs_table.c.created_at.asc(), opportunity_inputs_table.c.id.asc())
+    )
+    return connection.execute(query).mappings().all()
+
+
+def get_opportunity_input(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+    input_id: str,
+) -> RowMapping[str, Any] | None:
+    query = (
+        select(opportunity_inputs_table)
+        .select_from(
+            opportunity_inputs_table.join(
+                opportunities_table,
+                opportunities_table.c.id == opportunity_inputs_table.c.opportunity_id,
+            )
+        )
+        .where(
+            and_(
+                opportunities_table.c.workspace_id == workspace_id,
+                opportunities_table.c.id == opportunity_id,
+                opportunity_inputs_table.c.id == input_id,
+            )
+        )
+    )
+    return connection.execute(query).mappings().first()
+
+
+def create_opportunity_input(
+    connection: Connection,
+    *,
+    record: dict[str, Any],
+) -> RowMapping[str, Any] | None:
+    connection.execute(insert(opportunity_inputs_table).values(**record))
+    return get_opportunity_input(
+        connection,
+        workspace_id=record["workspace_id"],
+        opportunity_id=record["opportunity_id"],
+        input_id=record["id"],
+    )
+
+
+def update_opportunity_input(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+    input_id: str,
+    values: dict[str, Any],
+) -> RowMapping[str, Any] | None:
+    connection.execute(
+        update(opportunity_inputs_table)
+        .where(
+            opportunity_inputs_table.c.id.in_(
+                select(opportunity_inputs_table.c.id)
+                .select_from(
+                    opportunity_inputs_table.join(
+                        opportunities_table,
+                        opportunities_table.c.id == opportunity_inputs_table.c.opportunity_id,
+                    )
+                )
+                .where(
+                    and_(
+                        opportunities_table.c.workspace_id == workspace_id,
+                        opportunities_table.c.id == opportunity_id,
+                        opportunity_inputs_table.c.id == input_id,
+                    )
+                )
+            )
+        )
+        .values(**values)
+    )
+    return get_opportunity_input(
+        connection,
+        workspace_id=workspace_id,
+        opportunity_id=opportunity_id,
+        input_id=input_id,
+    )
+
+
+def get_latest_input_by_type(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+    input_type: str,
+) -> RowMapping[str, Any] | None:
+    query = (
+        select(opportunity_inputs_table)
+        .select_from(
+            opportunity_inputs_table.join(
+                opportunities_table,
+                opportunities_table.c.id == opportunity_inputs_table.c.opportunity_id,
+            )
+        )
+        .where(
+            and_(
+                opportunities_table.c.workspace_id == workspace_id,
+                opportunities_table.c.id == opportunity_id,
+                opportunity_inputs_table.c.input_type == input_type,
+            )
+        )
+        .order_by(opportunity_inputs_table.c.updated_at.desc(), opportunity_inputs_table.c.id.desc())
+    )
+    return connection.execute(query.limit(1)).mappings().first()
+
+
+def create_file_asset(
+    connection: Connection,
+    *,
+    record: dict[str, Any],
+) -> RowMapping[str, Any] | None:
+    connection.execute(insert(opportunity_file_assets_table).values(**record))
+    return get_file_asset(
+        connection,
+        workspace_id=record["workspace_id"],
+        opportunity_id=record["opportunity_id"],
+        file_asset_id=record["id"],
+    )
+
+
+def get_file_asset(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+    file_asset_id: str,
+) -> RowMapping[str, Any] | None:
+    query = (
+        select(opportunity_file_assets_table)
+        .where(
+            and_(
+                opportunity_file_assets_table.c.workspace_id == workspace_id,
+                opportunity_file_assets_table.c.opportunity_id == opportunity_id,
+                opportunity_file_assets_table.c.id == file_asset_id,
+            )
+        )
+    )
+    return connection.execute(query).mappings().first()
+
+
+def get_latest_file_asset(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+) -> RowMapping[str, Any] | None:
+    query = (
+        select(opportunity_file_assets_table)
+        .where(
+            and_(
+                opportunity_file_assets_table.c.workspace_id == workspace_id,
+                opportunity_file_assets_table.c.opportunity_id == opportunity_id,
+            )
+        )
+        .order_by(
+            opportunity_file_assets_table.c.updated_at.desc(),
+            opportunity_file_assets_table.c.created_at.desc(),
+            opportunity_file_assets_table.c.id.desc(),
+        )
+    )
+    return connection.execute(query.limit(1)).mappings().first()
+
+
+def update_file_asset(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+    file_asset_id: str,
+    values: dict[str, Any],
+) -> RowMapping[str, Any] | None:
+    connection.execute(
+        update(opportunity_file_assets_table)
+        .where(
+            and_(
+                opportunity_file_assets_table.c.workspace_id == workspace_id,
+                opportunity_file_assets_table.c.opportunity_id == opportunity_id,
+                opportunity_file_assets_table.c.id == file_asset_id,
+            )
+        )
+        .values(**values)
+    )
+    return get_file_asset(
+        connection,
+        workspace_id=workspace_id,
+        opportunity_id=opportunity_id,
+        file_asset_id=file_asset_id,
+    )
+
+
+def create_file_processing_job(
+    connection: Connection,
+    *,
+    record: dict[str, Any],
+) -> RowMapping[str, Any] | None:
+    connection.execute(insert(opportunity_file_processing_jobs_table).values(**record))
+    return get_latest_file_processing_job(
+        connection,
+        workspace_id=record["workspace_id"],
+        opportunity_id=record["opportunity_id"],
+        file_asset_id=record["file_asset_id"],
+    )
+
+
+def update_file_processing_job(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+    file_asset_id: str,
+    attempt_number: int,
+    values: dict[str, Any],
+) -> RowMapping[str, Any] | None:
+    connection.execute(
+        update(opportunity_file_processing_jobs_table)
+        .where(
+            and_(
+                opportunity_file_processing_jobs_table.c.workspace_id == workspace_id,
+                opportunity_file_processing_jobs_table.c.opportunity_id == opportunity_id,
+                opportunity_file_processing_jobs_table.c.file_asset_id == file_asset_id,
+                opportunity_file_processing_jobs_table.c.attempt_number == attempt_number,
+            )
+        )
+        .values(**values)
+    )
+    return get_latest_file_processing_job(
+        connection,
+        workspace_id=workspace_id,
+        opportunity_id=opportunity_id,
+        file_asset_id=file_asset_id,
+    )
+
+
+def list_file_processing_jobs(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+    file_asset_id: str,
+) -> list[RowMapping[str, Any]]:
+    query = (
+        select(opportunity_file_processing_jobs_table)
+        .where(
+            and_(
+                opportunity_file_processing_jobs_table.c.workspace_id == workspace_id,
+                opportunity_file_processing_jobs_table.c.opportunity_id == opportunity_id,
+                opportunity_file_processing_jobs_table.c.file_asset_id == file_asset_id,
+            )
+        )
+        .order_by(
+            opportunity_file_processing_jobs_table.c.attempt_number.desc(),
+            opportunity_file_processing_jobs_table.c.created_at.desc(),
+        )
+    )
+    return connection.execute(query).mappings().all()
+
+
+def get_latest_file_processing_job(
+    connection: Connection,
+    *,
+    workspace_id: str,
+    opportunity_id: str,
+    file_asset_id: str,
+) -> RowMapping[str, Any] | None:
+    jobs = list_file_processing_jobs(
+        connection,
+        workspace_id=workspace_id,
+        opportunity_id=opportunity_id,
+        file_asset_id=file_asset_id,
+    )
+    return jobs[0] if jobs else None
+
+
+def list_pending_file_processing_jobs(
+    connection: Connection,
+    *,
+    limit: int = 10,
+) -> list[RowMapping[str, Any]]:
+    query = (
+        select(opportunity_file_processing_jobs_table)
+        .where(opportunity_file_processing_jobs_table.c.status == "pending")
+        .order_by(
+            opportunity_file_processing_jobs_table.c.queued_at.asc().nullslast(),
+            opportunity_file_processing_jobs_table.c.created_at.asc(),
+        )
+        .limit(limit)
+    )
+    return connection.execute(query).mappings().all()

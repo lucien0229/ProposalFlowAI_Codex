@@ -11,7 +11,7 @@
 - [ ] **PLAT-02**: Customer web, admin, product API, admin API, and shared platform services are separated in code and route namespaces.
 - [ ] **PLAT-03**: The project defines `local`, `staging`, and `production` environments with distinct deploy objects for `web`, `admin`, `api`, and `worker`.
 - [ ] **UI-01**: Every customer-facing route renders task-oriented shipping UI rather than a specification page.
-- [ ] **UI-02**: Every customer-facing route supports the shared product states `loading`, `empty`, `error`, `blocked`, `retry`, and `success`.
+- [x] **UI-02**: Every customer-facing route supports the shared product states `loading`, `empty`, `error`, `blocked`, `retry`, and `success`.
 
 ### Identity & Workspace
 
@@ -25,13 +25,13 @@
 
 - [ ] **DASH-01**: The dashboard provides clear entry points to start a new opportunity and resume an unfinished one.
 - [ ] **OPP-01**: The opportunities list supports search, filter, sort, archive, and opening an opportunity.
-- [ ] **OPP-02**: Each opportunity has a single container for intake and downstream work instead of separate disconnected pages.
+- [x] **OPP-02**: Each opportunity has a single container for intake and downstream work instead of separate disconnected pages.
 
 ### Intake & Files
 
-- [ ] **INTAKE-01**: Opportunity overview captures raw input and the minimum opportunity fields needed to start the workflow.
-- [ ] **INTAKE-02**: PDF upload processing exposes the states `uploaded`, `processing`, `ready`, and `failed`, and supports retry.
-- [ ] **INTAKE-03**: Lead Brief generation can only be triggered from a valid opportunity context with intake inputs present.
+- [x] **INTAKE-01**: Opportunity overview captures raw input and the minimum opportunity fields needed to start the workflow.
+- [x] **INTAKE-02**: PDF upload processing exposes the states `uploaded`, `processing`, `ready`, and `failed`, and supports retry.
+- [x] **INTAKE-03**: Lead Brief generation can only be triggered from a valid opportunity context with intake inputs present.
 
 ### Versioned Working Resources
 
@@ -103,7 +103,7 @@
 | PLAT-02 | Phase 1 | Pending |
 | PLAT-03 | Phase 1 | Pending |
 | UI-01 | Phase 1 | Pending |
-| UI-02 | Phase 1 | Pending |
+| UI-02 | Phase 1 | Complete |
 | AUTH-01 | Phase 2 | Pending |
 | AUTH-02 | Phase 2 | Pending |
 | AUTH-03 | Phase 2 | Pending |
@@ -111,10 +111,10 @@
 | WORK-02 | Phase 2 | Pending |
 | DASH-01 | Phase 3 | Pending |
 | OPP-01 | Phase 3 | Pending |
-| OPP-02 | Phase 4 | Pending |
-| INTAKE-01 | Phase 4 | Pending |
-| INTAKE-02 | Phase 4 | Pending |
-| INTAKE-03 | Phase 4 | Pending |
+| OPP-02 | Phase 4 | Complete |
+| INTAKE-01 | Phase 4 | Complete |
+| INTAKE-02 | Phase 4 | Complete |
+| INTAKE-03 | Phase 4 | Complete |
 | STATE-01 | Phase 5 | Pending |
 | BRIEF-01 | Phase 5 | Pending |
 | BRIEF-02 | Phase 5 | Pending |

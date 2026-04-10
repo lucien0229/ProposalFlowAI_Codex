@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import {
   CircleCheckBig,
   Inbox,
@@ -23,6 +23,7 @@ type ProductStateAction = {
   label: string;
   href?: string;
   onAction?: () => void;
+  disabled?: boolean;
 };
 
 type ProductStateBlockProps = {
@@ -83,15 +84,31 @@ function StateAction({
   className: string;
 }) {
   if (action.href) {
+    const linkProps = action.disabled
+      ? {
+          href: "#",
+          "aria-disabled": "true" as const,
+          tabIndex: -1,
+          onClick: (event: MouseEvent<HTMLAnchorElement>) => {
+            event.preventDefault();
+          },
+        }
+      : {
+          href: action.href,
+        };
+
     return (
-      <Link href={action.href} className={className}>
+      <Link
+        className={className}
+        {...linkProps}
+      >
         {action.label}
       </Link>
     );
   }
 
   return (
-    <button type="button" className={className} onClick={action.onAction}>
+    <button type="button" className={className} onClick={action.onAction} disabled={action.disabled}>
       {action.label}
     </button>
   );

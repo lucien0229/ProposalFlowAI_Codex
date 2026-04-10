@@ -3,11 +3,28 @@ local:
   host: internal
   port: 0
   command: python -m main
+  environment:
+    APP_ENV: local
+    OBJECT_STORAGE_BACKEND: s3
+    OBJECT_STORAGE_BUCKET: proposalflow-intake-local
+    OBJECT_STORAGE_ENDPOINT_URL: http://minio:9000
+    OBJECT_STORAGE_ACCESS_KEY_ID: proposalflow
+    OBJECT_STORAGE_SECRET_ACCESS_KEY: proposalflow123
+    OBJECT_STORAGE_REGION_NAME: us-east-1
+    OBJECT_STORAGE_USE_PATH_STYLE: "1"
 staging:
   host: internal
   port: 0
   command: python -m main
+  environment:
+    APP_ENV: staging
+    OBJECT_STORAGE_BACKEND: s3
+    OBJECT_STORAGE_BUCKET: proposalflow-intake-staging
 production:
   host: internal
   port: 0
   command: python -m main
+  environment:
+    APP_ENV: production
+    OBJECT_STORAGE_BACKEND: s3
+    OBJECT_STORAGE_BUCKET: proposalflow-intake-production

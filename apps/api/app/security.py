@@ -5,6 +5,9 @@ from typing import Literal
 
 from fastapi import Depends, HTTPException, Request, status
 
+from app.account_service import get_session_record
+from app.db import get_engine
+
 SessionType = Literal["web", "admin"]
 
 WEB_SESSION_COOKIE = "pf_web_session"
@@ -30,11 +33,23 @@ def get_session_context(request: Request, session_type: SessionType) -> SessionC
             detail=f"Missing {session_type} session cookie",
         )
 
+    with get_engine().begin() as connection:
+        session = get_session_record(
+            connection,
+            session_id=session_id,
+            session_type=session_type,
+        )
+    if session is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid {session_type} session",
+        )
+
     return SessionContext(
         session_type=session_type,
-        session_id=session_id,
-        workspace_id=request.headers.get("x-workspace-id"),
-        user_id=request.headers.get("x-user-id"),
+        session_id=session.session_id,
+        workspace_id=session.workspace_id,
+        user_id=session.user_id,
     )
 
 

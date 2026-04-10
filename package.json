@@ -10,11 +10,12 @@
   },
   "devDependencies": {
     "@proposalflow/shared-config": "workspace:*",
+    "@proposalflow/shared-schemas": "workspace:*",
     "@proposalflow/shared-types": "workspace:*",
+    "@playwright/test": "1.55.0",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "turbo": "2.5.6",
-    "typescript": "5.9.2",
-    "@playwright/test": "1.55.0"
+    "typescript": "5.9.2"
   }
 }
