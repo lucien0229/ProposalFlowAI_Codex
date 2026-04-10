@@ -323,8 +323,18 @@ def resolve_current_step(status: str) -> str:
     return "overview"
 
 
+PUBLIC_STEP_SEGMENTS = {
+    "overview": "overview",
+    "lead_brief": "lead-brief",
+    "discovery": "discovery",
+    "proposal_draft": "proposal-draft",
+    "follow_up": "follow-up",
+}
+
+
 def build_current_step_url(opportunity_id: str, current_step: str) -> str:
-    return f"/opportunities/{opportunity_id}/{current_step}"
+    segment = PUBLIC_STEP_SEGMENTS.get(current_step, current_step)
+    return f"/opportunities/{opportunity_id}/{segment}"
 
 
 def resolve_attention_reason(
@@ -836,7 +846,7 @@ def generate_lead_brief(
         return None
     return {
         "status": "queued",
-        "redirect_to": f"/opportunities/{opportunity_id}/lead-brief",
+        "redirect_to": build_current_step_url(opportunity_id, "lead_brief"),
         "lead_brief": {
             "opportunity_id": opportunity_id,
             "generation_started_at": now.isoformat(),

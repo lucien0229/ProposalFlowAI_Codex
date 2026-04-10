@@ -42,14 +42,24 @@ export const SETUP_ROUTE_PATHS = {
   workspace: "/setup/workspace",
 } as const;
 
+export const OPPORTUNITY_STEP_ROUTE_SEGMENTS = {
+  overview: "overview",
+  lead_brief: "lead-brief",
+  discovery: "discovery",
+  proposal_draft: "proposal-draft",
+  follow_up: "follow-up",
+} as const satisfies Record<OpportunityCurrentStep, string>;
+
+export const buildOpportunityStepPath = (opportunityId: string, step: OpportunityCurrentStep) =>
+  `/opportunities/${opportunityId}/${OPPORTUNITY_STEP_ROUTE_SEGMENTS[step]}`;
+
 export const BUSINESS_ROUTE_PATHS = {
   dashboard: "/dashboard",
   opportunities: "/opportunities",
   templatesRules: "/templates-rules",
   billing: "/billing",
   settings: "/settings",
-  opportunityStep: (opportunityId: string, step: OpportunityCurrentStep) =>
-    `/opportunities/${opportunityId}/${step}`,
+  opportunityStep: buildOpportunityStepPath,
 } as const;
 
 export const GUARDED_BUSINESS_ROUTE_PREFIXES = [
