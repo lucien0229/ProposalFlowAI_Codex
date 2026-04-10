@@ -35,6 +35,7 @@ from app.opportunity_repository import (
     update_opportunity_context,
     update_opportunity_input as update_opportunity_input_record,
 )
+from app.lead_brief_service import bootstrap_lead_brief
 
 
 class WorkspaceRestrictionError(PermissionError):
@@ -844,11 +845,25 @@ def generate_lead_brief(
     )
     if updated is None:
         return None
+    lead_brief_workspace = bootstrap_lead_brief(
+        connection,
+        workspace_id=session.workspace_id or "",
+        opportunity=updated,
+        primary_input=primary_input,
+        extracted_input=extracted_input,
+        user_id=session.user_id,
+    )
+    lead_brief_current = lead_brief_workspace["lead_brief"]
     return {
         "status": "queued",
         "redirect_to": build_current_step_url(opportunity_id, "lead_brief"),
         "lead_brief": {
             "opportunity_id": opportunity_id,
+            "current_resource_id": lead_brief_current["id"] if lead_brief_current else None,
+            "current_revision_no": lead_brief_current["current_revision_no"] if lead_brief_current else None,
+            "latest_version_no": (
+                lead_brief_workspace["versions"][0]["version_no"] if lead_brief_workspace["versions"] else None
+            ),
             "generation_started_at": now.isoformat(),
         },
         "gate": gate,
