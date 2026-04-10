@@ -1,6 +1,19 @@
 import type {
   ActivityLog,
   AppEnvironment,
+  LeadBriefFieldKey,
+  LeadBriefFieldState,
+  LeadBriefFields,
+  LeadBriefConflictResponse,
+  LeadBriefCurrentResource,
+  LeadBriefCurrentResourceResponse,
+  LeadBriefFieldValue,
+  LeadBriefRestoreRequest,
+  LeadBriefSaveCurrentRequest,
+  LeadBriefSaveVersionRequest,
+  LeadBriefVersion,
+  LeadBriefVersionDetailResponse,
+  LeadBriefVersionListResponse,
   OpportunityCurrentStep,
   OpportunityFileProcessingJobStatus,
   OpportunityFileStatus,
@@ -408,3 +421,242 @@ export const leadBriefGenerateResponseSchema = strictObjectSchema(
     gate: opportunityGenerationGateSchema,
   },
 );
+
+export const leadBriefFieldStateSchema = enumSchema<LeadBriefFieldState>("LeadBriefFieldState", [
+  "confirmed",
+  "inferred",
+  "missing",
+  "needs_review",
+]);
+
+export const leadBriefFieldKeySchema = enumSchema<LeadBriefFieldKey>("LeadBriefFieldKey", [
+  "client_company",
+  "contact",
+  "requested_service",
+  "business_context",
+  "urgency_timeline",
+  "budget_signal",
+  "fit_assessment",
+  "missing_information",
+  "recommended_next_step",
+]);
+
+export const leadBriefFieldValueSchema = strictObjectSchema(
+  "LeadBriefFieldValue",
+  ["value", "state", "source_excerpt"] as const,
+  {
+    value: nullableStringSchema,
+    state: leadBriefFieldStateSchema,
+    source_excerpt: nullableStringSchema,
+  },
+) as const satisfies {
+  readonly title: "LeadBriefFieldValue";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefFieldValue)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefFieldsSchema = strictObjectSchema(
+  "LeadBriefFields",
+  [
+    "client_company",
+    "contact",
+    "requested_service",
+    "business_context",
+    "urgency_timeline",
+    "budget_signal",
+    "fit_assessment",
+    "missing_information",
+    "recommended_next_step",
+  ] as const,
+  {
+    client_company: leadBriefFieldValueSchema,
+    contact: leadBriefFieldValueSchema,
+    requested_service: leadBriefFieldValueSchema,
+    business_context: leadBriefFieldValueSchema,
+    urgency_timeline: leadBriefFieldValueSchema,
+    budget_signal: leadBriefFieldValueSchema,
+    fit_assessment: leadBriefFieldValueSchema,
+    missing_information: leadBriefFieldValueSchema,
+    recommended_next_step: leadBriefFieldValueSchema,
+  },
+) as const satisfies {
+  readonly title: "LeadBriefFields";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefFields)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefCurrentResourceSchema = strictObjectSchema(
+  "LeadBriefCurrentResource",
+  ["id", "opportunity_id", "workspace_id", "current_revision_no", "fields", "created_at", "updated_at"] as const,
+  {
+    id: { type: "string" },
+    opportunity_id: { type: "string" },
+    workspace_id: { type: "string" },
+    current_revision_no: { type: "integer", minimum: 0 },
+    fields: leadBriefFieldsSchema,
+    created_at: { type: "string" },
+    updated_at: { type: "string" },
+  },
+) as const satisfies {
+  readonly title: "LeadBriefCurrentResource";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefCurrentResource)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefVersionSchema = strictObjectSchema(
+  "LeadBriefVersion",
+  [
+    "id",
+    "opportunity_id",
+    "workspace_id",
+    "current_revision_no",
+    "fields",
+    "created_at",
+    "updated_at",
+    "version_no",
+    "saved_at",
+    "saved_by_user_id",
+    "saved_by_name",
+  ] as const,
+  {
+    id: { type: "string" },
+    opportunity_id: { type: "string" },
+    workspace_id: { type: "string" },
+    current_revision_no: { type: "integer", minimum: 0 },
+    fields: leadBriefFieldsSchema,
+    created_at: { type: "string" },
+    updated_at: { type: "string" },
+    version_no: { type: "integer", minimum: 1 },
+    saved_at: { type: "string" },
+    saved_by_user_id: nullableStringSchema,
+    saved_by_name: nullableStringSchema,
+  },
+) as const satisfies {
+  readonly title: "LeadBriefVersion";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefVersion)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefCurrentResourceResponseSchema = strictObjectSchema(
+  "LeadBriefCurrentResourceResponse",
+  ["lead_brief", "versions"] as const,
+  {
+    lead_brief: {
+      anyOf: [leadBriefCurrentResourceSchema, { type: "null" }],
+    },
+    versions: {
+      type: "array",
+      items: leadBriefVersionSchema,
+    },
+  },
+) as const satisfies {
+  readonly title: "LeadBriefCurrentResourceResponse";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefCurrentResourceResponse)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefVersionListResponseSchema = strictObjectSchema(
+  "LeadBriefVersionListResponse",
+  ["items"] as const,
+  {
+    items: {
+      type: "array",
+      items: leadBriefVersionSchema,
+    },
+  },
+) as const satisfies {
+  readonly title: "LeadBriefVersionListResponse";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefVersionListResponse)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefVersionDetailResponseSchema = strictObjectSchema(
+  "LeadBriefVersionDetailResponse",
+  ["version"] as const,
+  {
+    version: leadBriefVersionSchema,
+  },
+) as const satisfies {
+  readonly title: "LeadBriefVersionDetailResponse";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefVersionDetailResponse)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefSaveCurrentRequestSchema = strictObjectSchema(
+  "LeadBriefSaveCurrentRequest",
+  ["expected_revision_no", "fields"] as const,
+  {
+    expected_revision_no: { type: "integer", minimum: 0 },
+    fields: leadBriefFieldsSchema,
+  },
+) as const satisfies {
+  readonly title: "LeadBriefSaveCurrentRequest";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefSaveCurrentRequest)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefSaveVersionRequestSchema = strictObjectSchema(
+  "LeadBriefSaveVersionRequest",
+  ["expected_revision_no", "fields"] as const,
+  {
+    expected_revision_no: { type: "integer", minimum: 0 },
+    fields: leadBriefFieldsSchema,
+  },
+) as const satisfies {
+  readonly title: "LeadBriefSaveVersionRequest";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefSaveVersionRequest)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefRestoreRequestSchema = strictObjectSchema(
+  "LeadBriefRestoreRequest",
+  ["expected_revision_no", "version_no"] as const,
+  {
+    expected_revision_no: { type: "integer", minimum: 0 },
+    version_no: { type: "integer", minimum: 1 },
+  },
+) as const satisfies {
+  readonly title: "LeadBriefRestoreRequest";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefRestoreRequest)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const leadBriefConflictResponseSchema = strictObjectSchema(
+  "LeadBriefConflictResponse",
+  ["current_revision_no", "expected_revision_no", "latest_version_no", "message", "reload_hint"] as const,
+  {
+    current_revision_no: { type: "integer", minimum: 0 },
+    expected_revision_no: { type: "integer", minimum: 0 },
+    latest_version_no: {
+      anyOf: [{ type: "integer", minimum: 1 }, { type: "null" }],
+    },
+    message: { type: "string" },
+    reload_hint: { type: "string" },
+  },
+) as const satisfies {
+  readonly title: "LeadBriefConflictResponse";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof LeadBriefConflictResponse)[];
+  readonly properties: Record<string, unknown>;
+};

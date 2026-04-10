@@ -318,3 +318,95 @@ export type LeadBriefGenerateResponse = {
   generation_started_at: string;
   gate: OpportunityGenerationGate;
 };
+
+export type LeadBriefFieldState = "confirmed" | "inferred" | "missing" | "needs_review";
+export type LeadBriefFieldKey =
+  | "client_company"
+  | "contact"
+  | "requested_service"
+  | "business_context"
+  | "urgency_timeline"
+  | "budget_signal"
+  | "fit_assessment"
+  | "missing_information"
+  | "recommended_next_step";
+
+export type LeadBriefFieldValue = {
+  value: string | null;
+  state: LeadBriefFieldState;
+  source_excerpt: string | null;
+};
+
+export type LeadBriefFields = Record<LeadBriefFieldKey, LeadBriefFieldValue>;
+
+export const LEAD_BRIEF_FIELD_STATES = [
+  "confirmed",
+  "inferred",
+  "missing",
+  "needs_review",
+] as const satisfies readonly LeadBriefFieldState[];
+
+export const LEAD_BRIEF_FIELD_KEYS = [
+  "client_company",
+  "contact",
+  "requested_service",
+  "business_context",
+  "urgency_timeline",
+  "budget_signal",
+  "fit_assessment",
+  "missing_information",
+  "recommended_next_step",
+] as const satisfies readonly LeadBriefFieldKey[];
+
+export type LeadBriefCurrentResource = {
+  id: string;
+  opportunity_id: string;
+  workspace_id: string;
+  current_revision_no: number;
+  fields: LeadBriefFields;
+  created_at: string;
+  updated_at: string;
+};
+
+export type LeadBriefVersion = LeadBriefCurrentResource & {
+  version_no: number;
+  saved_at: string;
+  saved_by_user_id: string | null;
+  saved_by_name: string | null;
+};
+
+export type LeadBriefCurrentResourceResponse = {
+  lead_brief: LeadBriefCurrentResource | null;
+  versions: LeadBriefVersion[];
+};
+
+export type LeadBriefVersionListResponse = {
+  items: LeadBriefVersion[];
+};
+
+export type LeadBriefVersionDetailResponse = {
+  version: LeadBriefVersion;
+};
+
+export type LeadBriefSaveCurrentRequest = {
+  expected_revision_no: number;
+  fields: LeadBriefFields;
+};
+
+export type LeadBriefSaveVersionRequest = {
+  expected_revision_no: number;
+  fields: LeadBriefFields;
+};
+
+export type LeadBriefRestoreRequest = {
+  expected_revision_no: number;
+  version_no: number;
+};
+
+export type LeadBriefConflictResponse = {
+  current_revision_no: number;
+  expected_revision_no: number;
+  latest_version_no: number | null;
+  message: string;
+  reload_hint: string;
+};
