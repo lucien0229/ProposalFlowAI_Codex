@@ -1,6 +1,22 @@
 import type {
   ActivityLog,
   AppEnvironment,
+  DiscoveryConflictResponse,
+  DiscoveryCurrentResource,
+  DiscoveryCurrentResourceResponse,
+  DiscoveryFieldKey,
+  DiscoveryFieldState,
+  DiscoveryFieldValue,
+  DiscoveryFields,
+  DiscoveryGenerateResponse,
+  DiscoveryRestoreRequest,
+  DiscoverySaveCurrentRequest,
+  DiscoverySaveVersionRequest,
+  DiscoverySourceNote,
+  DiscoverySourceNotesRequest,
+  DiscoveryVersion,
+  DiscoveryVersionDetailResponse,
+  DiscoveryVersionListResponse,
   LeadBriefFieldKey,
   LeadBriefFieldState,
   LeadBriefFields,
@@ -658,5 +674,292 @@ export const leadBriefConflictResponseSchema = strictObjectSchema(
   readonly type: "object";
   readonly additionalProperties: false;
   readonly required: readonly (keyof LeadBriefConflictResponse)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoverySourceNoteSchema = strictObjectSchema(
+  "DiscoverySourceNote",
+  ["content", "source_label"] as const,
+  {
+    content: { type: "string" },
+    source_label: nullableStringSchema,
+  },
+) as const satisfies {
+  readonly title: "DiscoverySourceNote";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoverySourceNote)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoverySourceNotesSchema = {
+  title: "DiscoverySourceNotes",
+  type: "array",
+  items: discoverySourceNoteSchema,
+} as const;
+
+export const discoveryFieldStateSchema = enumSchema<DiscoveryFieldState>("DiscoveryFieldState", [
+  "confirmed",
+  "inferred",
+  "missing",
+  "needs_review",
+]);
+
+export const discoveryFieldKeySchema = enumSchema<DiscoveryFieldKey>("DiscoveryFieldKey", [
+  "goals",
+  "constraints",
+  "ambiguities",
+  "risk_flags",
+  "follow_up_questions",
+]);
+
+export const discoveryFieldValueSchema = strictObjectSchema(
+  "DiscoveryFieldValue",
+  ["value", "state", "source_excerpt"] as const,
+  {
+    value: nullableStringSchema,
+    state: discoveryFieldStateSchema,
+    source_excerpt: nullableStringSchema,
+  },
+) as const satisfies {
+  readonly title: "DiscoveryFieldValue";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryFieldValue)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoveryFieldsSchema = strictObjectSchema(
+  "DiscoveryFields",
+  ["goals", "constraints", "ambiguities", "risk_flags", "follow_up_questions"] as const,
+  {
+    goals: discoveryFieldValueSchema,
+    constraints: discoveryFieldValueSchema,
+    ambiguities: discoveryFieldValueSchema,
+    risk_flags: discoveryFieldValueSchema,
+    follow_up_questions: discoveryFieldValueSchema,
+  },
+) as const satisfies {
+  readonly title: "DiscoveryFields";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryFields)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoveryCurrentResourceSchema = strictObjectSchema(
+  "DiscoveryCurrentResource",
+  [
+    "id",
+    "opportunity_id",
+    "workspace_id",
+    "current_revision_no",
+    "fields",
+    "source_notes",
+    "created_at",
+    "updated_at",
+  ] as const,
+  {
+    id: { type: "string" },
+    opportunity_id: { type: "string" },
+    workspace_id: { type: "string" },
+    current_revision_no: { type: "integer", minimum: 0 },
+    fields: discoveryFieldsSchema,
+    source_notes: discoverySourceNotesSchema,
+    created_at: { type: "string" },
+    updated_at: { type: "string" },
+  },
+) as const satisfies {
+  readonly title: "DiscoveryCurrentResource";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryCurrentResource)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoveryVersionSchema = strictObjectSchema(
+  "DiscoveryVersion",
+  [
+    "id",
+    "opportunity_id",
+    "workspace_id",
+    "current_revision_no",
+    "fields",
+    "source_notes",
+    "created_at",
+    "updated_at",
+    "version_no",
+    "saved_at",
+    "saved_by_user_id",
+    "saved_by_name",
+  ] as const,
+  {
+    id: { type: "string" },
+    opportunity_id: { type: "string" },
+    workspace_id: { type: "string" },
+    current_revision_no: { type: "integer", minimum: 0 },
+    fields: discoveryFieldsSchema,
+    source_notes: discoverySourceNotesSchema,
+    created_at: { type: "string" },
+    updated_at: { type: "string" },
+    version_no: { type: "integer", minimum: 1 },
+    saved_at: { type: "string" },
+    saved_by_user_id: nullableStringSchema,
+    saved_by_name: nullableStringSchema,
+  },
+) as const satisfies {
+  readonly title: "DiscoveryVersion";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryVersion)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoveryCurrentResourceResponseSchema = strictObjectSchema(
+  "DiscoveryCurrentResourceResponse",
+  ["discovery", "versions"] as const,
+  {
+    discovery: {
+      anyOf: [discoveryCurrentResourceSchema, { type: "null" }],
+    },
+    versions: {
+      type: "array",
+      items: discoveryVersionSchema,
+    },
+  },
+) as const satisfies {
+  readonly title: "DiscoveryCurrentResourceResponse";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryCurrentResourceResponse)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoveryVersionListResponseSchema = strictObjectSchema(
+  "DiscoveryVersionListResponse",
+  ["items"] as const,
+  {
+    items: {
+      type: "array",
+      items: discoveryVersionSchema,
+    },
+  },
+) as const satisfies {
+  readonly title: "DiscoveryVersionListResponse";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryVersionListResponse)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoveryVersionDetailResponseSchema = strictObjectSchema(
+  "DiscoveryVersionDetailResponse",
+  ["version"] as const,
+  {
+    version: discoveryVersionSchema,
+  },
+) as const satisfies {
+  readonly title: "DiscoveryVersionDetailResponse";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryVersionDetailResponse)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoverySaveCurrentRequestSchema = strictObjectSchema(
+  "DiscoverySaveCurrentRequest",
+  ["expected_revision_no", "fields", "source_notes"] as const,
+  {
+    expected_revision_no: { type: "integer", minimum: 0 },
+    fields: discoveryFieldsSchema,
+    source_notes: discoverySourceNotesSchema,
+  },
+) as const satisfies {
+  readonly title: "DiscoverySaveCurrentRequest";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoverySaveCurrentRequest)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoverySaveVersionRequestSchema = strictObjectSchema(
+  "DiscoverySaveVersionRequest",
+  ["expected_revision_no", "fields", "source_notes"] as const,
+  {
+    expected_revision_no: { type: "integer", minimum: 0 },
+    fields: discoveryFieldsSchema,
+    source_notes: discoverySourceNotesSchema,
+  },
+) as const satisfies {
+  readonly title: "DiscoverySaveVersionRequest";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoverySaveVersionRequest)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoveryRestoreRequestSchema = strictObjectSchema(
+  "DiscoveryRestoreRequest",
+  ["expected_revision_no", "version_no"] as const,
+  {
+    expected_revision_no: { type: "integer", minimum: 0 },
+    version_no: { type: "integer", minimum: 1 },
+  },
+) as const satisfies {
+  readonly title: "DiscoveryRestoreRequest";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryRestoreRequest)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoveryConflictResponseSchema = strictObjectSchema(
+  "DiscoveryConflictResponse",
+  ["current_revision_no", "expected_revision_no", "latest_version_no", "message", "reload_hint"] as const,
+  {
+    current_revision_no: { type: "integer", minimum: 0 },
+    expected_revision_no: { type: "integer", minimum: 0 },
+    latest_version_no: {
+      anyOf: [{ type: "integer", minimum: 1 }, { type: "null" }],
+    },
+    message: { type: "string" },
+    reload_hint: { type: "string" },
+  },
+) as const satisfies {
+  readonly title: "DiscoveryConflictResponse";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryConflictResponse)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoveryGenerateResponseSchema = strictObjectSchema(
+  "DiscoveryGenerateResponse",
+  ["opportunity_id", "redirect_to", "generation_started_at", "gate"] as const,
+  {
+    opportunity_id: { type: "string" },
+    redirect_to: { type: "string" },
+    generation_started_at: { type: "string" },
+    gate: opportunityGenerationGateSchema,
+  },
+) as const satisfies {
+  readonly title: "DiscoveryGenerateResponse";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoveryGenerateResponse)[];
+  readonly properties: Record<string, unknown>;
+};
+
+export const discoverySourceNotesRequestSchema = strictObjectSchema(
+  "DiscoverySourceNotesRequest",
+  ["source_notes"] as const,
+  {
+    source_notes: discoverySourceNotesSchema,
+  },
+) as const satisfies {
+  readonly title: "DiscoverySourceNotesRequest";
+  readonly type: "object";
+  readonly additionalProperties: false;
+  readonly required: readonly (keyof DiscoverySourceNotesRequest)[];
   readonly properties: Record<string, unknown>;
 };

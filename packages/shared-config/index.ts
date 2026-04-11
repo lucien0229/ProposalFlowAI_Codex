@@ -98,6 +98,18 @@ export const buildLeadBriefVersionDetailApiPath = (opportunityId: string, versio
   `${buildLeadBriefVersionsApiPath(opportunityId)}/${versionNo}`;
 export const buildLeadBriefVersionRestoreApiPath = (opportunityId: string, versionNo: number) =>
   `${buildLeadBriefVersionDetailApiPath(opportunityId, versionNo)}/restore`;
+export const buildDiscoveryApiPath = (opportunityId: string) =>
+  `${buildOpportunityDetailApiPath(opportunityId)}/discovery`;
+export const buildDiscoveryGenerateApiPath = (opportunityId: string) =>
+  `${buildDiscoveryApiPath(opportunityId)}/generate`;
+export const buildDiscoverySaveVersionApiPath = (opportunityId: string) =>
+  `${buildDiscoveryApiPath(opportunityId)}/save-version`;
+export const buildDiscoveryVersionsApiPath = (opportunityId: string) =>
+  `${buildDiscoveryApiPath(opportunityId)}/versions`;
+export const buildDiscoveryVersionDetailApiPath = (opportunityId: string, versionNo: number) =>
+  `${buildDiscoveryVersionsApiPath(opportunityId)}/${versionNo}`;
+export const buildDiscoveryVersionRestoreApiPath = (opportunityId: string, versionNo: number) =>
+  `${buildDiscoveryVersionDetailApiPath(opportunityId, versionNo)}/restore`;
 
 export const OPPORTUNITY_API_ROUTE_TEMPLATES = {
   inputs: "/opportunities/${opportunityId}/inputs",
@@ -112,6 +124,12 @@ export const OPPORTUNITY_API_ROUTE_TEMPLATES = {
   leadBriefVersionDetail: "/opportunities/${opportunityId}/lead-brief/versions/${versionNo}",
   leadBriefVersionRestore:
     "/opportunities/${opportunityId}/lead-brief/versions/${versionNo}/restore",
+  discoveryGenerate: "/opportunities/${opportunityId}/discovery/generate",
+  discovery: "/opportunities/${opportunityId}/discovery",
+  discoverySaveVersion: "/opportunities/${opportunityId}/discovery/save-version",
+  discoveryVersions: "/opportunities/${opportunityId}/discovery/versions",
+  discoveryVersionDetail: "/opportunities/${opportunityId}/discovery/versions/${versionNo}",
+  discoveryVersionRestore: "/opportunities/${opportunityId}/discovery/versions/${versionNo}/restore",
 } as const;
 
 export const API_ROUTE_PATHS = {
@@ -133,6 +151,12 @@ export const API_ROUTE_PATHS = {
   leadBriefVersions: buildLeadBriefVersionsApiPath,
   leadBriefVersionDetail: buildLeadBriefVersionDetailApiPath,
   leadBriefVersionRestore: buildLeadBriefVersionRestoreApiPath,
+  discoveryGenerate: buildDiscoveryGenerateApiPath,
+  discovery: buildDiscoveryApiPath,
+  discoverySaveVersion: buildDiscoverySaveVersionApiPath,
+  discoveryVersions: buildDiscoveryVersionsApiPath,
+  discoveryVersionDetail: buildDiscoveryVersionDetailApiPath,
+  discoveryVersionRestore: buildDiscoveryVersionRestoreApiPath,
 } as const;
 
 export const OPPORTUNITY_API_ROUTE_DEFINITIONS = {
@@ -195,6 +219,34 @@ export const OPPORTUNITY_API_ROUTE_DEFINITIONS = {
   restoreLeadBriefVersion: {
     method: "POST",
     path: "POST /api/v1/opportunities/{opportunity_id}/lead-brief/versions/{version_no}/restore",
+  },
+  generateDiscovery: {
+    method: "POST",
+    path: "POST /api/v1/opportunities/{opportunity_id}/discovery/generate",
+  },
+  discoveryDetail: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/discovery",
+  },
+  updateDiscovery: {
+    method: "PATCH",
+    path: "PATCH /api/v1/opportunities/{opportunity_id}/discovery",
+  },
+  saveDiscoveryVersion: {
+    method: "POST",
+    path: "POST /api/v1/opportunities/{opportunity_id}/discovery/save-version",
+  },
+  discoveryVersions: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/discovery/versions",
+  },
+  discoveryVersionDetail: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/discovery/versions/{version_no}",
+  },
+  restoreDiscoveryVersion: {
+    method: "POST",
+    path: "POST /api/v1/opportunities/{opportunity_id}/discovery/versions/{version_no}/restore",
   },
 } as const;
 

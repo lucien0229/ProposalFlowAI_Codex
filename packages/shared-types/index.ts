@@ -410,3 +410,88 @@ export type LeadBriefConflictResponse = {
   message: string;
   reload_hint: string;
 };
+
+export type DiscoverySourceNote = {
+  content: string;
+  source_label: string | null;
+};
+
+export type DiscoverySourceNotes = DiscoverySourceNote[];
+
+export type DiscoveryFieldState = LeadBriefFieldState;
+export type DiscoveryFieldKey =
+  | "goals"
+  | "constraints"
+  | "ambiguities"
+  | "risk_flags"
+  | "follow_up_questions";
+
+export type DiscoveryFieldValue = LeadBriefFieldValue;
+export type DiscoveryFields = Record<DiscoveryFieldKey, DiscoveryFieldValue>;
+
+export type DiscoveryCurrentResource = {
+  id: string;
+  opportunity_id: string;
+  workspace_id: string;
+  current_revision_no: number;
+  fields: DiscoveryFields;
+  source_notes: DiscoverySourceNotes;
+  created_at: string;
+  updated_at: string;
+};
+
+export type DiscoveryVersion = DiscoveryCurrentResource & {
+  version_no: number;
+  saved_at: string;
+  saved_by_user_id: string | null;
+  saved_by_name: string | null;
+};
+
+export type DiscoveryCurrentResourceResponse = {
+  discovery: DiscoveryCurrentResource | null;
+  versions: DiscoveryVersion[];
+};
+
+export type DiscoveryVersionListResponse = {
+  items: DiscoveryVersion[];
+};
+
+export type DiscoveryVersionDetailResponse = {
+  version: DiscoveryVersion;
+};
+
+export type DiscoverySaveCurrentRequest = {
+  expected_revision_no: number;
+  fields: DiscoveryFields;
+  source_notes: DiscoverySourceNotes;
+};
+
+export type DiscoverySaveVersionRequest = {
+  expected_revision_no: number;
+  fields: DiscoveryFields;
+  source_notes: DiscoverySourceNotes;
+};
+
+export type DiscoveryRestoreRequest = {
+  expected_revision_no: number;
+  version_no: number;
+};
+
+export type DiscoveryConflictResponse = {
+  current_revision_no: number;
+  expected_revision_no: number;
+  latest_version_no: number | null;
+  message: string;
+  reload_hint: string;
+};
+
+export type DiscoveryGenerateResponse = {
+  opportunity_id: string;
+  redirect_to: string;
+  generation_started_at: string;
+  gate: OpportunityGenerationGate;
+};
+
+export type DiscoverySourceNotesRequest = {
+  source_notes: DiscoverySourceNotes;
+};
