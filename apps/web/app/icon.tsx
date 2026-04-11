@@ -20,7 +20,7 @@ export default function Icon() {
           background:
             "linear-gradient(180deg, rgba(11, 12, 14, 1), rgba(7, 8, 10, 1))",
           color: "#f7f8f8",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "var(--font-sans), sans-serif",
           fontSize: 16,
           fontWeight: 700,
           letterSpacing: "-0.08em",

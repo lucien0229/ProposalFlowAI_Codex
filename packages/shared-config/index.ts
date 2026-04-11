@@ -42,14 +42,24 @@ export const SETUP_ROUTE_PATHS = {
   workspace: "/setup/workspace",
 } as const;
 
+export const OPPORTUNITY_STEP_ROUTE_SEGMENTS = {
+  overview: "overview",
+  lead_brief: "lead-brief",
+  discovery: "discovery",
+  proposal_draft: "proposal-draft",
+  follow_up: "follow-up",
+} as const satisfies Record<OpportunityCurrentStep, string>;
+
+export const buildOpportunityStepPath = (opportunityId: string, step: OpportunityCurrentStep) =>
+  `/opportunities/${opportunityId}/${OPPORTUNITY_STEP_ROUTE_SEGMENTS[step]}`;
+
 export const BUSINESS_ROUTE_PATHS = {
   dashboard: "/dashboard",
   opportunities: "/opportunities",
   templatesRules: "/templates-rules",
   billing: "/billing",
   settings: "/settings",
-  opportunityStep: (opportunityId: string, step: OpportunityCurrentStep) =>
-    `/opportunities/${opportunityId}/${step}`,
+  opportunityStep: buildOpportunityStepPath,
 } as const;
 
 export const GUARDED_BUSINESS_ROUTE_PREFIXES = [
@@ -78,6 +88,16 @@ export const buildOpportunityFileRetryApiPath = (opportunityId: string, fileAsse
   `${buildOpportunityFileDetailApiPath(opportunityId, fileAssetId)}/retry`;
 export const buildLeadBriefGenerateApiPath = (opportunityId: string) =>
   `${buildOpportunityDetailApiPath(opportunityId)}/lead-brief/generate`;
+export const buildLeadBriefApiPath = (opportunityId: string) =>
+  `${buildOpportunityDetailApiPath(opportunityId)}/lead-brief`;
+export const buildLeadBriefSaveVersionApiPath = (opportunityId: string) =>
+  `${buildLeadBriefApiPath(opportunityId)}/save-version`;
+export const buildLeadBriefVersionsApiPath = (opportunityId: string) =>
+  `${buildLeadBriefApiPath(opportunityId)}/versions`;
+export const buildLeadBriefVersionDetailApiPath = (opportunityId: string, versionNo: number) =>
+  `${buildLeadBriefVersionsApiPath(opportunityId)}/${versionNo}`;
+export const buildLeadBriefVersionRestoreApiPath = (opportunityId: string, versionNo: number) =>
+  `${buildLeadBriefVersionDetailApiPath(opportunityId, versionNo)}/restore`;
 
 export const OPPORTUNITY_API_ROUTE_TEMPLATES = {
   inputs: "/opportunities/${opportunityId}/inputs",
@@ -86,6 +106,12 @@ export const OPPORTUNITY_API_ROUTE_TEMPLATES = {
   fileDetail: "/opportunities/${opportunityId}/files/${fileAssetId}",
   fileRetry: "/opportunities/${opportunityId}/files/${fileAssetId}/retry",
   leadBriefGenerate: "/opportunities/${opportunityId}/lead-brief/generate",
+  leadBrief: "/opportunities/${opportunityId}/lead-brief",
+  leadBriefSaveVersion: "/opportunities/${opportunityId}/lead-brief/save-version",
+  leadBriefVersions: "/opportunities/${opportunityId}/lead-brief/versions",
+  leadBriefVersionDetail: "/opportunities/${opportunityId}/lead-brief/versions/${versionNo}",
+  leadBriefVersionRestore:
+    "/opportunities/${opportunityId}/lead-brief/versions/${versionNo}/restore",
 } as const;
 
 export const API_ROUTE_PATHS = {
@@ -102,6 +128,11 @@ export const API_ROUTE_PATHS = {
   opportunityFileDetail: buildOpportunityFileDetailApiPath,
   opportunityFileRetry: buildOpportunityFileRetryApiPath,
   leadBriefGenerate: buildLeadBriefGenerateApiPath,
+  leadBrief: buildLeadBriefApiPath,
+  leadBriefSaveVersion: buildLeadBriefSaveVersionApiPath,
+  leadBriefVersions: buildLeadBriefVersionsApiPath,
+  leadBriefVersionDetail: buildLeadBriefVersionDetailApiPath,
+  leadBriefVersionRestore: buildLeadBriefVersionRestoreApiPath,
 } as const;
 
 export const OPPORTUNITY_API_ROUTE_DEFINITIONS = {
@@ -144,6 +175,26 @@ export const OPPORTUNITY_API_ROUTE_DEFINITIONS = {
   generateLeadBrief: {
     method: "POST",
     path: "POST /api/v1/opportunities/{opportunity_id}/lead-brief/generate",
+  },
+  leadBriefDetail: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/lead-brief",
+  },
+  saveLeadBriefVersion: {
+    method: "POST",
+    path: "POST /api/v1/opportunities/{opportunity_id}/lead-brief/save-version",
+  },
+  leadBriefVersions: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/lead-brief/versions",
+  },
+  leadBriefVersionDetail: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/lead-brief/versions/{version_no}",
+  },
+  restoreLeadBriefVersion: {
+    method: "POST",
+    path: "POST /api/v1/opportunities/{opportunity_id}/lead-brief/versions/{version_no}/restore",
   },
 } as const;
 

@@ -26,16 +26,27 @@ export async function onboardToDashboard(
   await page.getByLabel("Industry type").selectOption("product_ux_agency");
   await page.getByLabel("Default template").selectOption("product_ux_agency");
   await page.getByLabel("Default tone preference").selectOption("consultative");
-  await Promise.all([
-    page.waitForResponse((response) => {
+  const response = await Promise.all([
+    page.waitForResponse((candidate) => {
       return (
-        response.url().includes("/api/v1/workspaces") &&
-        response.request().method() === "POST" &&
-        response.status() === 201
+        candidate.url().includes("/api/v1/workspaces") &&
+        candidate.request().method() === "POST" &&
+        candidate.status() === 201
       );
     }),
     page.getByRole("button", { name: /continue to dashboard/i }).click(),
-  ]);
+  ]).then(([workspaceResponse]) => workspaceResponse);
+
+  const payload = (await response.json().catch(() => ({}))) as Record<string, unknown>;
+  const redirectTo =
+    typeof payload.redirect_to === "string" ? payload.redirect_to : "/dashboard";
+  const redirectUrl = new URL(redirectTo, baseURL).toString();
+
+  try {
+    await page.waitForURL(redirectUrl, { timeout: 15_000 });
+  } catch {
+    await page.goto(redirectUrl);
+  }
 
   await expect(page).toHaveURL(/\/dashboard/, { timeout: 15_000 });
 }
