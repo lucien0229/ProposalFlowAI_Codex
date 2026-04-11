@@ -31,11 +31,25 @@ class LeadBriefFieldValuePayload(BaseModel):
     source_excerpt: str | None = None
 
 
+class LeadBriefFieldsPayload(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    client_company: LeadBriefFieldValuePayload
+    contact: LeadBriefFieldValuePayload
+    requested_service: LeadBriefFieldValuePayload
+    business_context: LeadBriefFieldValuePayload
+    urgency_timeline: LeadBriefFieldValuePayload
+    budget_signal: LeadBriefFieldValuePayload
+    fit_assessment: LeadBriefFieldValuePayload
+    missing_information: LeadBriefFieldValuePayload
+    recommended_next_step: LeadBriefFieldValuePayload
+
+
 class LeadBriefFieldsMutationPayload(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     expected_revision_no: int = Field(ge=0)
-    fields: dict[str, LeadBriefFieldValuePayload]
+    fields: LeadBriefFieldsPayload
 
 
 class LeadBriefRestorePayload(BaseModel):
@@ -168,7 +182,7 @@ def patch_lead_brief_route(
                 workspace_id=loaded_session.workspace_id or "",
                 opportunity_id=opportunity_id,
                 expected_revision_no=payload.expected_revision_no,
-                fields={name: value.model_dump() for name, value in payload.fields.items()},
+                fields=payload.fields.model_dump(),
                 user_id=loaded_session.user_id,
             )
     except LeadBriefConflictError as error:
@@ -217,7 +231,7 @@ def save_lead_brief_version_route(
                 workspace_id=loaded_session.workspace_id or "",
                 opportunity_id=opportunity_id,
                 expected_revision_no=payload.expected_revision_no,
-                fields={name: value.model_dump() for name, value in payload.fields.items()},
+                fields=payload.fields.model_dump(),
                 user_id=loaded_session.user_id,
             )
     except LeadBriefConflictError as error:

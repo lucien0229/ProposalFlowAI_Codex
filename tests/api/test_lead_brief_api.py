@@ -274,6 +274,49 @@ def test_lead_brief_patch_and_save_version_work_as_separate_operations(
     assert version_detail_response.json()["version"]["version_no"] == 1
 
 
+def test_lead_brief_mutations_reject_partial_or_extra_field_maps(
+    api_client: TestClient,
+    authenticated_web_session,
+) -> None:
+    opportunity_id = _create_opportunity(authenticated_web_session)
+    _prime_source_notes(api_client, authenticated_web_session, opportunity_id)
+
+    generate_response = api_client.post(
+        f"/api/v1/opportunities/{opportunity_id}/lead-brief/generate",
+        headers=authenticated_web_session.write_header_map(),
+    )
+    assert generate_response.status_code == 202
+
+    missing_field_payload = _lead_brief_fields()
+    missing_field_payload.pop("recommended_next_step")
+    missing_field_response = api_client.patch(
+        f"/api/v1/opportunities/{opportunity_id}/lead-brief",
+        json={
+            "expected_revision_no": 1,
+            "fields": missing_field_payload,
+        },
+        headers=authenticated_web_session.write_header_map(),
+    )
+    assert missing_field_response.status_code == 422
+
+    extra_field_payload = _lead_brief_fields(
+        extra_field={
+            "value": "Unexpected field.",
+            "state": "confirmed",
+            "source_excerpt": "Unexpected field.",
+        }
+    )
+    extra_field_response = api_client.post(
+        f"/api/v1/opportunities/{opportunity_id}/lead-brief/save-version",
+        json={
+            "expected_revision_no": 1,
+            "fields": extra_field_payload,
+        },
+        headers=authenticated_web_session.write_header_map(),
+    )
+    assert extra_field_response.status_code == 422
+
+
 def test_lead_brief_restore_copies_the_snapshot_back_into_current_state(
     api_client: TestClient,
     authenticated_web_session,

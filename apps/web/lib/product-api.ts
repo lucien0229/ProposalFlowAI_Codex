@@ -31,17 +31,52 @@ function readCookieValue(cookieSource: string, name: string) {
   return match ? decodeURIComponent(match.slice(name.length + 1)) : null;
 }
 
+function readObjectProperty(payload: unknown, key: string) {
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+  const value = (payload as Record<string, unknown>)[key];
+  return value && typeof value === "object" ? (value as Record<string, unknown>) : null;
+}
+
+function readStringProperty(payload: unknown, key: string) {
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+  const value = (payload as Record<string, unknown>)[key];
+  return typeof value === "string" ? value : null;
+}
+
 function readErrorMessage(payload: unknown, status: number) {
   if (status >= 500) {
     return "The workspace service is unavailable right now.";
   }
 
-  if (payload && typeof payload === "object") {
-    if ("detail" in payload && typeof payload.detail === "string") {
-      return payload.detail;
+  const topLevelDetail = readStringProperty(payload, "detail");
+  if (topLevelDetail) {
+    return topLevelDetail;
+  }
+
+  const topLevelMessage = readStringProperty(payload, "message");
+  if (topLevelMessage) {
+    return topLevelMessage;
+  }
+
+  const errorPayload = readObjectProperty(payload, "error");
+  if (errorPayload) {
+    const reloadHint = readObjectProperty(errorPayload, "details")?.reload_hint;
+    if (typeof reloadHint === "string" && reloadHint.trim()) {
+      return reloadHint;
     }
-    if ("message" in payload && typeof payload.message === "string") {
-      return payload.message;
+
+    const nestedDetail = readStringProperty(errorPayload, "detail");
+    if (nestedDetail) {
+      return nestedDetail;
+    }
+
+    const nestedMessage = readStringProperty(errorPayload, "message");
+    if (nestedMessage) {
+      return nestedMessage;
     }
   }
 

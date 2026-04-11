@@ -1,7 +1,11 @@
+import { ProductShell } from "@/components/product-shell";
 import { OpportunityIntakeSurface } from "@/components/opportunities/opportunity-intake-surface";
+import { LeadBriefWorkspace } from "@/components/opportunities/lead-brief-workspace";
 import { fetchOpportunityIntakeDetail } from "@/lib/opportunities-api";
 import { ProductApiError } from "@/lib/product-api";
 import { requireBusinessContext } from "@/lib/server-business-context";
+import { OPPORTUNITY_STEP_ROUTE_SEGMENTS } from "@proposalflow/shared-config";
+import { ProductStateBlock } from "@/components/product-state-block";
 
 type OpportunityStepRouteProps = {
   params: Promise<{
@@ -24,6 +28,49 @@ export default async function OpportunityStepRoute({
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const routeState = readFirstSearchParam(resolvedSearchParams?.state);
   const view = readFirstSearchParam(resolvedSearchParams?.view);
+
+  if (resolvedParams.step === OPPORTUNITY_STEP_ROUTE_SEGMENTS.lead_brief) {
+    try {
+      const detail = await fetchOpportunityIntakeDetail(resolvedParams.opportunityId, {
+        cookieHeader,
+      });
+
+      return (
+        <ProductShell
+          workspaceName={bootstrap.workspace?.name ?? null}
+          pageTitle="Lead Brief"
+          pageDescription="Shape the current opportunity into a brief you can trust, version, and hand off."
+          eyebrow="Lead Brief workspace"
+        >
+          <LeadBriefWorkspace opportunityId={resolvedParams.opportunityId} opportunityDetail={detail} />
+        </ProductShell>
+      );
+    } catch (caughtError) {
+      if (caughtError instanceof ProductApiError && caughtError.status === 404) {
+        return (
+          <ProductShell
+            workspaceName={bootstrap.workspace?.name ?? null}
+            pageTitle="Lead Brief"
+            pageDescription="Shape the current opportunity into a brief you can trust, version, and hand off."
+            eyebrow="Lead Brief workspace"
+          >
+            <ProductStateBlock
+              state="error"
+              title="Opportunity not found."
+              body="Return to Opportunities and reopen the record."
+              detail="The requested opportunity record is missing or unavailable."
+              primaryAction={{
+                label: "Back to opportunities",
+                href: "/opportunities",
+              }}
+            />
+          </ProductShell>
+        );
+      }
+
+      throw caughtError;
+    }
+  }
 
   if (routeState === "loading" || routeState === "empty" || routeState === "error" || routeState === "blocked" || routeState === "retry" || routeState === "success" || view === "not-found") {
     return (
