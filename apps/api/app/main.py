@@ -4,6 +4,7 @@ from app import metadata
 from app.activity_logs import record_activity_log
 from app.admin import router as admin_router
 from app.db import ensure_database_schema
+from app.discovery_routes import router as discovery_router
 from app.file_processing_runtime import resolve_object_store
 from app.lead_brief_routes import router as lead_brief_router
 from app.product import router as product_router
@@ -47,6 +48,7 @@ def create_app() -> FastAPI:
 
     app.include_router(product_router, prefix=API_V1_PREFIX)
     app.include_router(lead_brief_router, prefix=API_V1_PREFIX)
+    app.include_router(discovery_router, prefix=API_V1_PREFIX)
     app.include_router(admin_router, prefix=f"{API_V1_PREFIX}/admin")
 
     @app.on_event("startup")

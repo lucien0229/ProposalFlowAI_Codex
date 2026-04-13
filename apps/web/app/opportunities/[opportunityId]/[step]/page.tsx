@@ -1,6 +1,7 @@
 import { ProductShell } from "@/components/product-shell";
 import { OpportunityIntakeSurface } from "@/components/opportunities/opportunity-intake-surface";
 import { LeadBriefWorkspace } from "@/components/opportunities/lead-brief-workspace";
+import { DiscoveryWorkspace } from "@/components/opportunities/discovery-workspace";
 import { fetchOpportunityIntakeDetail } from "@/lib/opportunities-api";
 import { ProductApiError } from "@/lib/product-api";
 import { requireBusinessContext } from "@/lib/server-business-context";
@@ -28,6 +29,49 @@ export default async function OpportunityStepRoute({
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const routeState = readFirstSearchParam(resolvedSearchParams?.state);
   const view = readFirstSearchParam(resolvedSearchParams?.view);
+
+  if (resolvedParams.step === OPPORTUNITY_STEP_ROUTE_SEGMENTS.discovery) {
+    try {
+      const detail = await fetchOpportunityIntakeDetail(resolvedParams.opportunityId, {
+        cookieHeader,
+      });
+
+      return (
+        <ProductShell
+          workspaceName={bootstrap.workspace?.name ?? null}
+          pageTitle="Discovery"
+          pageDescription="Capture the evidence, keep the current discovery record versioned, and hand off to Proposal Draft."
+          eyebrow="Discovery workspace"
+        >
+          <DiscoveryWorkspace opportunityId={resolvedParams.opportunityId} opportunityDetail={detail} />
+        </ProductShell>
+      );
+    } catch (caughtError) {
+      if (caughtError instanceof ProductApiError && caughtError.status === 404) {
+        return (
+          <ProductShell
+            workspaceName={bootstrap.workspace?.name ?? null}
+            pageTitle="Discovery"
+            pageDescription="Capture the evidence, keep the current discovery record versioned, and hand off to Proposal Draft."
+            eyebrow="Discovery workspace"
+          >
+            <ProductStateBlock
+              state="error"
+              title="Opportunity not found."
+              body="Return to Opportunities and reopen the record."
+              detail="The requested opportunity record is missing or unavailable."
+              primaryAction={{
+                label: "Back to opportunities",
+                href: "/opportunities",
+              }}
+            />
+          </ProductShell>
+        );
+      }
+
+      throw caughtError;
+    }
+  }
 
   if (resolvedParams.step === OPPORTUNITY_STEP_ROUTE_SEGMENTS.lead_brief) {
     try {

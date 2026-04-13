@@ -54,18 +54,11 @@ export async function createOpportunityAndOpenOverview(page: Page, baseURL: stri
     companyName: "North Star Studio",
     requestedService: "Website redesign and migration support",
   });
-  const createResponse = page.waitForResponse(
-    (response) =>
-      response.url().includes("/api/v1/opportunities") &&
-      response.request().method() === "POST" &&
-      response.status() === 201,
-  );
   await submitOpportunityForm(page);
-  const response = await createResponse;
-  const payload = (await response.json()) as { opportunity?: { id?: string } };
-  const opportunityId = payload.opportunity?.id;
+  await expect(page).toHaveURL(/\/opportunities\/[^/]+\/overview$/, { timeout: 15_000 });
+  const opportunityId = new URL(page.url()).pathname.split("/")[2];
   if (!opportunityId) {
-    throw new Error("Expected opportunity id in create response.");
+    throw new Error(`Expected opportunity id in overview URL, got ${page.url()}.`);
   }
 
   await page.goto(new URL(`/opportunities/${opportunityId}/overview`, baseURL).toString(), {
