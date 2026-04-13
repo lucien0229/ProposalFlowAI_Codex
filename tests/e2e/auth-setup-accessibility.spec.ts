@@ -26,6 +26,12 @@ test.describe("auth-setup accessibility", () => {
     await page.keyboard.press("Tab");
     await expect(page.getByRole("button", { name: "Sign in" })).toBeFocused();
 
+    const createAccountBox = await page.getByRole("link", { name: "Create account" }).boundingBox();
+    const forgotPasswordBox = await page.getByRole("link", { name: "Forgot password?" }).boundingBox();
+    const separatorBox = await page.locator(".auth-form__footer").getByText("·").boundingBox();
+    expect(Math.abs((separatorBox?.y ?? 0) - (createAccountBox?.y ?? 0))).toBeLessThan(4);
+    expect(Math.abs((separatorBox?.y ?? 0) - (forgotPasswordBox?.y ?? 0))).toBeLessThan(4);
+
     const noOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
     expect(noOverflow).toBeTruthy();
 

@@ -53,6 +53,7 @@ def test_list_opportunities_with_filters(
             "order_by": "updated_at",
             "order_direction": "desc",
         },
+        headers=authenticated_web_session.read_header_map(),
     )
 
     assert response.status_code == 200
@@ -76,7 +77,10 @@ def test_opportunity_detail_includes_current_step_and_restriction_fields(
     )
     opportunity_id = create_response.json()["opportunity"]["id"]
 
-    response = api_client.get(f"/api/v1/opportunities/{opportunity_id}")
+    response = api_client.get(
+        f"/api/v1/opportunities/{opportunity_id}",
+        headers=authenticated_web_session.read_header_map(),
+    )
 
     assert response.status_code == 200
     payload = response.json()
@@ -167,7 +171,10 @@ def test_dashboard_summary(
     )
     assert create_response.status_code == 201
 
-    response = api_client.get("/api/v1/dashboard/summary")
+    response = api_client.get(
+        "/api/v1/dashboard/summary",
+        headers=authenticated_web_session.read_header_map(),
+    )
 
     assert response.status_code == 200
     payload = response.json()
@@ -208,7 +215,10 @@ def test_dashboard_summary_counts_full_workspace_blockers_not_recent_sample(
     )
     assert healthy_response.status_code == 201
 
-    response = api_client.get("/api/v1/dashboard/summary")
+    response = api_client.get(
+        "/api/v1/dashboard/summary",
+        headers=authenticated_web_session.read_header_map(),
+    )
 
     assert response.status_code == 200
     payload = response.json()
@@ -265,7 +275,11 @@ def test_list_opportunities_rejects_invalid_cursor(
     )
     assert create_response.status_code == 201
 
-    response = api_client.get("/api/v1/opportunities", params={"cursor": "not-a-real-cursor"})
+    response = api_client.get(
+        "/api/v1/opportunities",
+        params={"cursor": "not-a-real-cursor"},
+        headers=authenticated_web_session.read_header_map(),
+    )
 
     assert response.status_code == 400
     assert response.json()["detail"] == "Invalid opportunity cursor."
@@ -285,6 +299,7 @@ def test_resume_target_uses_current_step_url(
 
     detail_response = api_client.get(
         f"/api/v1/opportunities/{create_response.json()['opportunity']['id']}",
+        headers=authenticated_web_session.read_header_map(),
     )
 
     assert detail_response.status_code == 200

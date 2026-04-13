@@ -23,7 +23,7 @@ export function OpportunityRow({
   onArchiveToggle,
 }: OpportunityRowProps) {
   return (
-    <article className="opportunity-row">
+    <article className="opportunity-row" role="listitem">
       <Link href={item.current_step_url} className="opportunity-row__content">
         <div className="opportunity-row__title-group">
           <strong>{item.title}</strong>

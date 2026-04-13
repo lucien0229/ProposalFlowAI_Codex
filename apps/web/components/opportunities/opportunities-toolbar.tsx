@@ -26,10 +26,30 @@ export function OpportunitiesToolbar({
   onOpenNewOpportunity,
 }: OpportunitiesToolbarProps) {
   const [searchDraft, setSearchDraft] = useState(query.q ?? "");
+  const [isComposing, setIsComposing] = useState(false);
 
   useEffect(() => {
     setSearchDraft(query.q ?? "");
   }, [query.q]);
+
+  useEffect(() => {
+    if (isComposing) {
+      return;
+    }
+
+    const committedSearch = query.q ?? "";
+    if (searchDraft === committedSearch) {
+      return;
+    }
+
+    const debounceTimer = window.setTimeout(() => {
+      onQueryChange({ q: searchDraft || undefined, cursor: null });
+    }, 300);
+
+    return () => {
+      window.clearTimeout(debounceTimer);
+    };
+  }, [isComposing, onQueryChange, query.q, searchDraft]);
 
   return (
     <section className="product-panel opportunities-toolbar" aria-label="Opportunities toolbar">
@@ -47,9 +67,12 @@ export function OpportunitiesToolbar({
           aria-label="Search"
           value={searchDraft}
           onChange={(event) => {
-            const value = event.target.value;
-            setSearchDraft(value);
-            onQueryChange({ q: value || undefined, cursor: null });
+            setSearchDraft(event.target.value);
+          }}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={(event) => {
+            setIsComposing(false);
+            setSearchDraft(event.currentTarget.value);
           }}
           placeholder="Search title or company"
         />

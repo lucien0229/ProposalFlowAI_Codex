@@ -57,6 +57,17 @@ test.describe("opportunities list accessibility", () => {
     await expect(dialog).toHaveCount(0);
     await expect(newOpportunityButton).toBeFocused();
 
+    await newOpportunityButton.click();
+    await dialog.getByLabel("Title").fill("Semantics review");
+    await dialog.getByLabel("Company name").fill("North Star Studio");
+    await dialog.getByRole("button", { name: /create opportunity|continue to overview/i }).click();
+    await expect(page).toHaveURL(/\/opportunities\/.+\/overview/);
+    await page.goto(new URL("/opportunities", webBase).toString());
+
+    const list = page.getByRole("list");
+    await expect(list).toBeVisible();
+    await expect(list.getByRole("listitem")).toHaveCount(1);
+
     const noOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
     expect(noOverflow).toBeTruthy();
   });

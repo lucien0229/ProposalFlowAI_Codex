@@ -63,7 +63,7 @@ test.describe("dashboard and opportunities error recovery", () => {
       });
     });
 
-    const row = page.getByRole("article").filter({ hasText: "Atlas migration" });
+    const row = page.getByRole("listitem").filter({ hasText: "Atlas migration" });
     await row.getByRole("button", { name: "Archive opportunity" }).click();
 
     await expect(page.getByRole("heading", { name: "We couldn't load this opportunity view." })).toBeVisible();
@@ -80,10 +80,10 @@ test.describe("dashboard and opportunities error recovery", () => {
     await onboardToDashboard(page, webBase);
 
     const workspaceId = await getWorkspaceIdForCurrentSession(page);
-    const previousState = readWorkspaceBillingState(workspaceId);
+    const previousState = await readWorkspaceBillingState(workspaceId);
 
     try {
-      updateWorkspaceBillingState(workspaceId, {
+      await updateWorkspaceBillingState(workspaceId, {
         ...previousState,
         trialStatus: "trial_expired",
       });
@@ -104,7 +104,7 @@ test.describe("dashboard and opportunities error recovery", () => {
       await expect(toolbarCreateButton).toBeDisabled();
       await expect(page.getByText(/review billing to create new work/i)).toBeVisible();
     } finally {
-      updateWorkspaceBillingState(workspaceId, previousState);
+      await updateWorkspaceBillingState(workspaceId, previousState);
     }
   });
 });

@@ -55,6 +55,10 @@ test.describe("dashboard command center accessibility", () => {
     await expect(page.getByRole("heading", { name: "No opportunities yet." })).toBeVisible();
     await expect(page.getByRole("region", { name: /empty workspace state/i })).toBeVisible();
 
+    const navigationBox = await navigation.boundingBox();
+    const contentBox = await page.locator("#product-main-content").boundingBox();
+    expect(contentBox?.x ?? 0).toBeGreaterThan((navigationBox?.x ?? 0) + 180);
+
     const noOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
     expect(noOverflow).toBeTruthy();
   });

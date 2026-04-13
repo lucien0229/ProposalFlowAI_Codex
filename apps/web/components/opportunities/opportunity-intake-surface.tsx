@@ -489,7 +489,7 @@ export function OpportunityIntakeSurface({
   }
 
   const resolvedLatestFile = latestFileAsset ?? detail?.intake?.latest_file ?? null;
-  const latestFileState = resolvedLatestFile?.file_status ?? "uploaded";
+  const latestFileState = resolvedLatestFile?.file_status ?? null;
   const isPreviewExpanded = expandedPreviewFileId !== null && expandedPreviewFileId === resolvedLatestFile?.id;
   const previewText = isPreviewExpanded ? resolvedLatestFile?.extracted_text ?? null : null;
 
@@ -557,22 +557,21 @@ export function OpportunityIntakeSurface({
                     ? {
                         label: "Loading opportunity intake",
                         disabled: true,
-                      }
+                    }
                 : undefined
             }
-          />
-
-          {routeState === "blocked" ? (
-            <p className="product-muted">
-              Your PDF is still processing. You can wait for extraction or add manual source notes now.
-            </p>
-          ) : null}
-
-          {routeState === "retry" ? (
-            <p className="product-muted">
-              The last save attempt failed, so keep the visible intake contract intact and retry once the record is stable.
-            </p>
-          ) : null}
+          >
+            {routeState === "blocked" ? (
+              <p className="product-muted">
+                Your PDF is still processing. You can wait for extraction or add manual source notes now.
+              </p>
+            ) : null}
+            {routeState === "retry" ? (
+              <p className="product-muted">
+                The last save attempt failed, so keep the visible intake contract intact and retry once the record is stable.
+              </p>
+            ) : null}
+          </ProductStateBlock>
         </div>
       </ProductShell>
     );
@@ -739,63 +738,55 @@ export function OpportunityIntakeSurface({
             </div>
           ) : null}
 
-          <div className="intake-file-states" data-testid="opportunity-file-state">
-            {(
-              [
-                ["uploaded", "Uploaded"],
-                ["processing", "Processing"],
-                ["ready", "Ready"],
-                ["failed", "Failed"],
-              ] as const
-            ).map(([stateKey, label]) => {
-              const copy = getFileStateCopy(stateKey);
-              const isActive = latestFileState === stateKey;
-              return (
-                <article
-                  key={stateKey}
-                  className="intake-file-card"
-                  data-file-state={stateKey}
-                  data-active={isActive ? "true" : "false"}
-                >
-                  <div className="intake-file-card__header">
-                    <span className="product-chip product-chip--step">{label}</span>
-                    {isActive ? <span className="product-chip">Current</span> : null}
-                  </div>
-                  <h3>{copy.title}</h3>
-                  {isActive && resolvedLatestFile ? (
-                    <p className="intake-file-card__meta">
-                      {latestFileName}
-                      {latestFileUploadedAt ? ` · uploaded ${latestFileUploadedAt.toLocaleString()}` : ""}
-                    </p>
-                  ) : null}
-                  <p>{copy.body}</p>
-                  {stateKey === "failed" ? (
+          {resolvedLatestFile && latestFileState ? (
+            <div className="intake-file-states" data-testid="opportunity-file-state">
+              <article
+                className="intake-file-card"
+                data-file-state={latestFileState}
+                data-active="true"
+              >
+                <div className="intake-file-card__header">
+                  <span className="product-chip product-chip--step">{getFileStateCopy(latestFileState).title}</span>
+                  <span className="product-chip">Current</span>
+                </div>
+                <h3>{getFileStateCopy(latestFileState).title}</h3>
+                <p className="intake-file-card__meta">
+                  {latestFileName}
+                  {latestFileUploadedAt ? ` · uploaded ${latestFileUploadedAt.toLocaleString()}` : ""}
+                </p>
+                <p>{getFileStateCopy(latestFileState).body}</p>
+                {latestFileState === "failed" ? (
+                  <button
+                    type="button"
+                    className="product-button product-button--ghost"
+                    onClick={() => void handleRetryExtraction(resolvedLatestFile.id)}
+                  >
+                    Retry extraction
+                  </button>
+                ) : null}
+                {latestFileState === "processing" ? (
+                  <p className="product-muted">Keep editing raw input while extraction runs.</p>
+                ) : null}
+                {latestFileState === "ready" ? (
+                  <div className="intake-preview-toggle">
                     <button
                       type="button"
                       className="product-button product-button--ghost"
-                      onClick={() => void handleRetryExtraction(resolvedLatestFile?.id ?? null)}
+                      onClick={() => void handleToggleExtractedTextPreview(resolvedLatestFile.id)}
                     >
-                      Retry extraction
+                      {isPreviewExpanded ? "Hide extracted text preview" : "Open extracted text preview"}
                     </button>
-                  ) : null}
-                  {stateKey === "processing" ? (
-                    <p className="product-muted">Keep editing raw input while extraction runs.</p>
-                  ) : null}
-                  {stateKey === "ready" ? (
-                    <div className="intake-preview-toggle">
-                      <button
-                        type="button"
-                        className="product-button product-button--ghost"
-                        onClick={() => void handleToggleExtractedTextPreview(resolvedLatestFile?.id ?? null)}
-                      >
-                        {isPreviewExpanded ? "Hide extracted text preview" : "Open extracted text preview"}
-                      </button>
-                    </div>
-                  ) : null}
-                </article>
-              );
-            })}
-          </div>
+                  </div>
+                ) : null}
+              </article>
+            </div>
+          ) : (
+            <section className="intake-file-empty" data-testid="opportunity-file-state" aria-label="PDF intake status">
+              <span className="panel-kicker">PDF status</span>
+              <h3>No PDF uploaded yet</h3>
+              <p>Upload a PDF to start extraction. Raw input stays editable even without a file.</p>
+            </section>
+          )}
 
           {isPreviewExpanded ? (
             <section className="intake-preview-panel" aria-labelledby="extracted-text-preview-heading">
@@ -935,21 +926,9 @@ export function OpportunityIntakeSurface({
 
             {actionError ? <p className="inline-alert">{actionError}</p> : null}
 
-            <div className="intake-inline-actions">
-              <button type="submit" className="product-button product-button--primary" disabled={isSaving}>
-                <Save aria-hidden="true" size={16} />
-                <span>Save opportunity</span>
-              </button>
-              <button
-                type="button"
-                className="product-button product-button--ghost"
-                onClick={handleGenerateLeadBrief}
-                disabled={!generationGate.can_generate}
-              >
-                <Sparkles aria-hidden="true" size={16} />
-                <span>Generate lead brief</span>
-              </button>
-            </div>
+            <p className="product-muted">
+              Use the header actions to save changes or move this opportunity into the lead brief once the intake is ready.
+            </p>
           </form>
         </section>
       </div>

@@ -1,9 +1,8 @@
-import { execFileSync } from "node:child_process";
+import { Client } from "pg";
 
 import type { Page } from "@playwright/test";
 
 const WEB_SESSION_COOKIE_NAME = "pf_web_session";
-const DEFAULT_DATABASE_PATH = process.env.PROPOSALFLOW_DB_PATH ?? "/tmp/proposalflow-phase3.db";
 
 type WorkspaceBillingState = {
   trialStatus: string | null;
@@ -11,14 +10,26 @@ type WorkspaceBillingState = {
   planType: string | null;
 };
 
-function escapeSql(value: string) {
-  return value.replaceAll("'", "''");
+export function resolveWorkspaceDatabaseUrl(env: NodeJS.ProcessEnv = process.env) {
+  const databaseUrl = env.PROPOSALFLOW_TEST_DATABASE_URL ?? env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error(
+      "Set PROPOSALFLOW_TEST_DATABASE_URL or DATABASE_URL before running workspace-backed Playwright helpers.",
+    );
+  }
+
+  return databaseUrl.replace("postgresql+psycopg://", "postgresql://");
 }
 
-function runSql(sql: string) {
-  return execFileSync("sqlite3", ["-noheader", DEFAULT_DATABASE_PATH, sql], {
-    encoding: "utf8",
-  }).trim();
+async function runQuery<T extends Record<string, string | null>>(text: string, values: unknown[] = []) {
+  const client = new Client({ connectionString: resolveWorkspaceDatabaseUrl() });
+  await client.connect();
+
+  try {
+    return await client.query<T>(text, values);
+  } finally {
+    await client.end();
+  }
 }
 
 async function getCurrentSessionId(page: Page) {
@@ -33,16 +44,18 @@ async function getCurrentSessionId(page: Page) {
 
 export async function getWorkspaceIdForCurrentSession(page: Page) {
   const sessionId = await getCurrentSessionId(page);
-  const workspaceId = runSql(
+  const result = await runQuery<{ workspace_id: string }>(
     [
       "select wm.workspace_id",
       "from user_sessions us",
       "join workspace_members wm on wm.user_id = us.user_id",
-      `where us.id = '${escapeSql(sessionId)}' and wm.is_active = 1`,
+      "where us.id = $1 and wm.is_active = true",
       "limit 1;",
     ].join(" "),
+    [sessionId],
   );
 
+  const workspaceId = result.rows[0]?.workspace_id;
   if (!workspaceId) {
     throw new Error(`No workspace found for session ${sessionId}.`);
   }
@@ -50,37 +63,42 @@ export async function getWorkspaceIdForCurrentSession(page: Page) {
   return workspaceId;
 }
 
-export function readWorkspaceBillingState(workspaceId: string): WorkspaceBillingState {
-  const result = runSql(
+export async function readWorkspaceBillingState(workspaceId: string): Promise<WorkspaceBillingState> {
+  const result = await runQuery<WorkspaceBillingState>(
     [
       "select",
-      "coalesce(trial_status, ''),",
-      "coalesce(billing_status, ''),",
-      "coalesce(plan_type, '')",
+      "coalesce(trial_status, '') as \"trialStatus\",",
+      "coalesce(billing_status, '') as \"billingStatus\",",
+      "coalesce(plan_type, '') as \"planType\"",
       "from workspaces",
-      `where id = '${escapeSql(workspaceId)}'`,
+      "where id = $1",
       "limit 1;",
     ].join(" "),
+    [workspaceId],
   );
 
-  const [trialStatus = "", billingStatus = "", planType = ""] = result.split("|");
+  const row = result.rows[0];
   return {
-    trialStatus: trialStatus || null,
-    billingStatus: billingStatus || null,
-    planType: planType || null,
+    trialStatus: row?.trialStatus || null,
+    billingStatus: row?.billingStatus || null,
+    planType: row?.planType || null,
   };
 }
 
-export function updateWorkspaceBillingState(workspaceId: string, nextState: WorkspaceBillingState) {
-  runSql(
+export async function updateWorkspaceBillingState(
+  workspaceId: string,
+  nextState: WorkspaceBillingState,
+) {
+  await runQuery(
     [
       "update workspaces",
       "set",
-      `trial_status = ${nextState.trialStatus ? `'${escapeSql(nextState.trialStatus)}'` : "null"},`,
-      `billing_status = ${nextState.billingStatus ? `'${escapeSql(nextState.billingStatus)}'` : "null"},`,
-      `plan_type = ${nextState.planType ? `'${escapeSql(nextState.planType)}'` : "null"},`,
+      "trial_status = $2,",
+      "billing_status = $3,",
+      "plan_type = $4,",
       "updated_at = CURRENT_TIMESTAMP",
-      `where id = '${escapeSql(workspaceId)}';`,
+      "where id = $1;",
     ].join(" "),
+    [workspaceId, nextState.trialStatus, nextState.billingStatus, nextState.planType],
   );
 }

@@ -1,0 +1,119 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e49] [cursor=pointer]:
+    - img [ref=e50]
+  - alert [ref=e53]
+  - link "Skip to main content" [ref=e171] [cursor=pointer]:
+    - /url: "#product-main-content"
+  - main [ref=e172]:
+    - complementary [ref=e173]:
+      - generic [ref=e174]:
+        - generic [ref=e175]: ProposalFlow AI
+        - strong [ref=e176]: North Star Studio
+        - paragraph [ref=e177]: Proposal-ready command center
+      - navigation "Primary product navigation" [ref=e178]:
+        - link "Dashboard" [ref=e179] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e180]
+          - generic [ref=e185]: Dashboard
+        - link "Opportunities" [ref=e186] [cursor=pointer]:
+          - /url: /opportunities
+          - img [ref=e187]
+          - generic [ref=e191]: Opportunities
+        - link "Templates & Rules" [ref=e192] [cursor=pointer]:
+          - /url: /templates-rules
+          - img [ref=e193]
+          - generic [ref=e194]: Templates & Rules
+        - link "Billing" [ref=e195] [cursor=pointer]:
+          - /url: /billing
+          - img [ref=e196]
+          - generic [ref=e198]: Billing
+        - link "Settings" [ref=e199] [cursor=pointer]:
+          - /url: /settings
+          - img [ref=e200]
+          - generic [ref=e203]: Settings
+      - generic [ref=e204]:
+        - generic [ref=e205]: Web app only
+        - paragraph [ref=e206]: Desktop and laptop workflow surface for intake, resume, and handoff.
+    - generic [ref=e207]:
+      - generic [ref=e208]:
+        - generic [ref=e209]:
+          - generic [ref=e210]: Opportunity intake
+          - heading "North Star redesign" [level=1] [ref=e211]
+          - paragraph [ref=e212]: North Star Studio · Lead intake workspace
+        - generic [ref=e213]:
+          - generic [ref=e214]: Saved just now
+          - generic [ref=e215]:
+            - generic [ref=e216]:
+              - button "Generate lead brief" [disabled] [ref=e217]:
+                - img [ref=e218]
+                - generic [ref=e221]: Generate lead brief
+              - button "Save opportunity" [ref=e222]:
+                - img [ref=e223]
+                - generic [ref=e227]: Save opportunity
+            - paragraph [ref=e228]: "Generate lead brief: Add raw source notes or wait for extracted text before generating the lead brief."
+      - generic [ref=e230]:
+        - region "Source material" [ref=e231]:
+          - generic [ref=e232]:
+            - generic [ref=e233]:
+              - text: Source material
+              - heading "Source material" [level=2] [ref=e234]
+            - button "Seed raw notes" [ref=e235]:
+              - img [ref=e236]
+              - generic [ref=e239]: Seed raw notes
+          - generic [ref=e240]:
+            - heading "No source material yet." [level=3] [ref=e241]
+            - paragraph [ref=e242]: Paste raw notes or upload a PDF to start shaping this opportunity. The minimum context stays editable while source material catches up.
+          - generic [ref=e243]:
+            - generic [ref=e244]:
+              - generic [ref=e245]: PDF intake
+              - heading "Upload a PDF" [level=3] [ref=e246]
+              - paragraph [ref=e247]: Drop a file here or choose one manually. Extraction starts immediately and the rest of the intake stays editable.
+            - generic [ref=e248]:
+              - button "Choose File" [ref=e249]
+              - button "Upload PDF" [ref=e250]:
+                - img [ref=e251]
+                - generic [ref=e254]: Upload PDF
+          - generic [ref=e255]:
+            - generic [ref=e256]: Raw input
+            - textbox "Raw input" [ref=e257]
+          - region "PDF intake status" [ref=e258]:
+            - generic [ref=e259]: PDF status
+            - heading "No PDF uploaded yet" [level=3] [ref=e260]
+            - paragraph [ref=e261]: Upload a PDF to start extraction. Raw input stays editable even without a file.
+        - region "Minimum opportunity context" [ref=e262]:
+          - generic [ref=e263]:
+            - generic [ref=e264]:
+              - text: Minimum opportunity context
+              - heading "Minimum opportunity context" [level=2] [ref=e265]
+            - generic [ref=e266]: Lead Intake
+          - generic [ref=e267]:
+            - generic [ref=e268]:
+              - generic [ref=e269]: Title
+              - textbox "Title" [ref=e270]: North Star redesign
+            - generic [ref=e271]:
+              - generic [ref=e272]: Company name
+              - textbox "Company name" [ref=e273]: North Star Studio
+            - generic [ref=e274]:
+              - generic [ref=e275]: Requested service
+              - textbox "Requested service" [ref=e276]: Website redesign and migration support
+            - generic [ref=e277]:
+              - generic [ref=e278]:
+                - generic [ref=e279]: Contact name
+                - textbox "Contact name" [ref=e280]
+              - generic [ref=e281]:
+                - generic [ref=e282]: Contact email
+                - textbox "Contact email" [ref=e283]
+            - generic [ref=e284]:
+              - generic [ref=e285]: Source type
+              - combobox "Source type" [ref=e286]:
+                - option "Manual" [selected]
+                - option "Email thread"
+                - option "PDF upload"
+            - generic [ref=e287]:
+              - generic [ref=e288]:
+                - text: Owner
+                - paragraph [ref=e289]: UI Review
+              - generic [ref=e290]:
+                - text: Saved state
+                - paragraph [ref=e291]: Saved just now
+            - paragraph [ref=e292]: Use the header actions to save changes or move this opportunity into the lead brief once the intake is ready.

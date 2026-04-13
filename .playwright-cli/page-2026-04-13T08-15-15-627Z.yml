@@ -1,0 +1,43 @@
+- generic [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e49] [cursor=pointer]:
+    - img [ref=e50]
+  - alert [ref=e53]
+  - main [ref=e54]:
+    - generic [ref=e55]:
+      - complementary [ref=e56]:
+        - generic [ref=e57]:
+          - generic [ref=e58]: ProposalFlow AI
+          - generic [ref=e59]: Workspace setup
+        - heading "Set the defaults that guide every proposal draft." [level=1] [ref=e60]
+        - paragraph [ref=e61]: Capture the smallest stable business context so the first proposal starts fast, stays consistent, and feels on brand.
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - strong [ref=e64]: Captured now
+            - generic [ref=e65]: Workspace name, industry, template, and tone.
+          - generic [ref=e66]:
+            - strong [ref=e67]: Editable later
+            - generic [ref=e68]: Tune the defaults once the workspace is live.
+      - generic [ref=e70]:
+        - generic [ref=e71]:
+          - generic [ref=e72]: Workspace name
+          - textbox "Workspace name" [active] [ref=e73]:
+            - /placeholder: North Star Studio
+            - text: North Star Studio
+        - generic [ref=e74]:
+          - generic [ref=e75]: Industry type
+          - combobox "Industry type" [ref=e76]:
+            - option "Web development agency"
+            - option "Product and UX agency" [selected]
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - generic [ref=e79]: Default template
+            - combobox "Default template" [ref=e80]:
+              - option "Development agency"
+              - option "Product and UX agency" [selected]
+          - generic [ref=e81]:
+            - generic [ref=e82]: Default tone preference
+            - combobox "Default tone preference" [ref=e83]:
+              - option "Balanced"
+              - option "Direct"
+              - option "Consultative" [selected]
+        - button "Continue to dashboard" [ref=e84]

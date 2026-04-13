@@ -4,25 +4,25 @@ import os
 from functools import lru_cache
 
 from sqlalchemy import Engine, create_engine
-from sqlalchemy.pool import StaticPool
 
 from app import metadata
 
-DEFAULT_DATABASE_URL = "sqlite+pysqlite:///./proposalflow.local.db"
-
 
 def get_database_url() -> str:
-    return os.environ.get("DATABASE_URL", DEFAULT_DATABASE_URL)
+    try:
+        database_url = os.environ["DATABASE_URL"]
+    except KeyError as exc:
+        raise RuntimeError("DATABASE_URL must be set to a PostgreSQL URL.") from exc
+
+    if not database_url.startswith("postgresql"):
+        raise RuntimeError("DATABASE_URL must point to PostgreSQL.")
+
+    return database_url
 
 
 @lru_cache(maxsize=None)
 def _build_engine(database_url: str) -> Engine:
-    kwargs: dict[str, object] = {"future": True}
-    if database_url.startswith("sqlite"):
-        kwargs["connect_args"] = {"check_same_thread": False}
-        if ":memory:" in database_url:
-            kwargs["poolclass"] = StaticPool
-    return create_engine(database_url, **kwargs)
+    return create_engine(database_url, future=True)
 
 
 def get_engine(database_url: str | None = None) -> Engine:

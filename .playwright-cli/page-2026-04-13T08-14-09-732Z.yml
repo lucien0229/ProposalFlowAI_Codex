@@ -1,0 +1,41 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: ProposalFlow AI
+        - generic [ref=e7]: Create account
+        - heading "Build a repeatable workspace." [level=1] [ref=e8]
+        - paragraph [ref=e9]: Create the canonical account now, then turn proposal setup into a repeatable system.
+      - generic "Auth flow notes" [ref=e10]:
+        - generic [ref=e11]:
+          - strong [ref=e12]: Canonical account
+          - generic [ref=e13]: Create one business identity for the workspace.
+        - generic [ref=e14]:
+          - strong [ref=e15]: Setup next
+          - generic [ref=e16]: Move straight into defaults and first draft setup.
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - link "Sign up with Google" [ref=e20] [cursor=pointer]:
+          - /url: /auth/google/start?return_url=%2Fdashboard
+          - img [ref=e21]
+          - generic [ref=e26]: Sign up with Google
+        - generic [ref=e27]: or use email
+      - generic [ref=e28]:
+        - paragraph [ref=e29]: Create your business account and continue straight into setup.
+        - generic [ref=e30]:
+          - generic [ref=e31]: Email
+          - textbox "Email" [ref=e32]:
+            - /placeholder: owner@agency.com
+        - generic [ref=e33]:
+          - generic [ref=e34]: Full name
+          - textbox "Full name" [ref=e35]:
+            - /placeholder: Alex Morgan
+        - generic [ref=e36]:
+          - generic [ref=e37]: Password
+          - textbox "Password" [ref=e38]:
+            - /placeholder: At least 8 characters
+        - button "Create account" [ref=e39]
+        - generic [ref=e40]:
+          - generic [ref=e41]: Already have an account?
+          - link "Sign in" [ref=e43] [cursor=pointer]:
+            - /url: /auth/sign-in?return_url=%2Fdashboard

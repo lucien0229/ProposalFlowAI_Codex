@@ -7,9 +7,12 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, Iterator
 
+import psycopg
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import insert
+from sqlalchemy.engine import make_url
+from psycopg import sql
 
 ROOT = Path(__file__).resolve().parents[1]
 API_APP_ROOT = ROOT / "apps" / "api"
@@ -28,6 +31,12 @@ from app.account_models import (
 from app.db import clear_engine_cache, get_engine, reset_database
 from app.main import create_app
 from tests.support.file_processing_fakes import InMemoryObjectStore, InlineQueue
+
+
+TEST_DATABASE_URL = os.environ.get(
+    "PROPOSALFLOW_TEST_DATABASE_URL",
+    "postgresql+psycopg://proposalflow:proposalflow@127.0.0.1:5432/proposalflow_test",
+)
 
 
 @dataclass(frozen=True)
@@ -79,8 +88,23 @@ def fake_object_store() -> InMemoryObjectStore:
 
 
 @pytest.fixture
-def api_database_url(tmp_path: Path) -> str:
-    return f"sqlite+pysqlite:///{tmp_path / 'proposalflow-api.sqlite3'}"
+def api_database_url() -> str:
+    return TEST_DATABASE_URL
+
+
+def ensure_postgres_database(database_url: str) -> None:
+    url = make_url(database_url)
+    if not url.drivername.startswith("postgresql"):
+        raise RuntimeError(f"Expected a PostgreSQL DATABASE_URL, got {database_url!r}.")
+    if not url.database:
+        raise RuntimeError("DATABASE_URL must include a database name.")
+
+    admin_url = url.set(drivername="postgresql", database="postgres").render_as_string(hide_password=False)
+    with psycopg.connect(admin_url, autocommit=True) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute("select 1 from pg_database where datname = %s", (url.database,))
+            if cursor.fetchone() is None:
+                cursor.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(url.database)))
 
 
 @pytest.fixture
@@ -90,6 +114,7 @@ def api_client(
     fake_object_store: InMemoryObjectStore,
 ) -> Iterator[TestClient]:
     previous_database_url = os.environ.get("DATABASE_URL")
+    ensure_postgres_database(api_database_url)
     os.environ["DATABASE_URL"] = api_database_url
     clear_engine_cache()
     reset_database(api_database_url)

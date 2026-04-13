@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from logging.config import fileConfig
 from pathlib import Path
@@ -14,6 +15,11 @@ if str(BASE_DIR) not in sys.path:
 from app import metadata as target_metadata  # noqa: E402
 
 config = context.config
+
+database_url = os.environ.get("DATABASE_URL")
+if not database_url:
+    raise RuntimeError("DATABASE_URL must be set for Alembic migrations.")
+config.set_main_option("sqlalchemy.url", database_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

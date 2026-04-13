@@ -1,0 +1,121 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e49] [cursor=pointer]:
+    - img [ref=e50]
+  - alert [ref=e53]: Loading workspace
+  - link "Skip to main content" [ref=e542] [cursor=pointer]:
+    - /url: "#product-main-content"
+  - main [ref=e543]:
+    - complementary [ref=e544]:
+      - generic [ref=e545]:
+        - generic [ref=e546]: ProposalFlow AI
+        - strong [ref=e547]: North Star Studio
+        - paragraph [ref=e548]: Proposal-ready command center
+      - navigation "Primary product navigation" [ref=e549]:
+        - link "Dashboard" [ref=e550] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e551]
+          - generic [ref=e556]: Dashboard
+        - link "Opportunities" [ref=e557] [cursor=pointer]:
+          - /url: /opportunities
+          - img [ref=e558]
+          - generic [ref=e562]: Opportunities
+        - link "Templates & Rules" [ref=e563] [cursor=pointer]:
+          - /url: /templates-rules
+          - img [ref=e564]
+          - generic [ref=e565]: Templates & Rules
+        - link "Billing" [ref=e566] [cursor=pointer]:
+          - /url: /billing
+          - img [ref=e567]
+          - generic [ref=e569]: Billing
+        - link "Settings" [ref=e570] [cursor=pointer]:
+          - /url: /settings
+          - img [ref=e571]
+          - generic [ref=e574]: Settings
+      - generic [ref=e575]:
+        - generic [ref=e576]: Web app only
+        - paragraph [ref=e577]: Desktop and laptop workflow surface for intake, resume, and handoff.
+    - generic [ref=e578]:
+      - generic [ref=e580]:
+        - generic [ref=e581]: Discovery workspace
+        - heading "Discovery" [level=1] [ref=e582]
+        - paragraph [ref=e583]: Capture the evidence, keep the current discovery record versioned, and hand off to Proposal Draft.
+      - generic [ref=e585]:
+        - generic [ref=e586]:
+          - generic [ref=e587]:
+            - generic [ref=e588]: Discovery workspace
+            - heading "Current discovery" [level=2] [ref=e589]
+            - paragraph [ref=e590]: Capture the evidence, make the gaps visible, and keep the current discovery record versioned.
+          - generic [ref=e591]:
+            - generic [ref=e592]: Revision 1
+            - generic [ref=e593]: North Star Studio · Discovery
+            - navigation "Opportunity workflow" [ref=e594]:
+              - generic [ref=e595]:
+                - generic [ref=e596]: "1"
+                - generic [ref=e597]: Lead Intake
+              - generic [ref=e598]:
+                - generic [ref=e599]: "2"
+                - generic [ref=e600]: Lead Brief
+              - generic [ref=e601]:
+                - generic [ref=e602]: "3"
+                - generic [ref=e603]: Discovery
+              - generic [ref=e604]:
+                - generic [ref=e605]: "4"
+                - generic [ref=e606]: Proposal Draft
+              - generic [ref=e607]:
+                - generic [ref=e608]: "5"
+                - generic [ref=e609]: Follow-up
+        - generic [ref=e610]:
+          - region "Source material" [ref=e611]:
+            - generic [ref=e612]:
+              - generic [ref=e613]:
+                - text: Source material
+                - heading "Source material" [level=2] [ref=e614]
+              - generic [ref=e615]: Current revision 1
+            - generic [ref=e616]:
+              - generic [ref=e617]:
+                - generic [ref=e618]: Opportunity
+                - paragraph [ref=e619]: North Star redesign
+              - generic [ref=e620]:
+                - generic [ref=e621]: Company
+                - paragraph [ref=e622]: North Star Studio
+              - generic [ref=e623]:
+                - generic [ref=e624]: Source type
+                - paragraph [ref=e625]: manual
+            - generic [ref=e626]:
+              - generic [ref=e627]: Opportunity intake
+              - generic [ref=e628]: Manual notes
+              - generic [ref=e629]: Updated Apr 13, 4:17 PM
+            - generic [ref=e630]:
+              - generic [ref=e631]: Source excerpt
+              - paragraph [ref=e632]: North Star needs a redesign, migration support, and analytics cleanup before proposal drafting.
+            - generic [ref=e633]:
+              - generic [ref=e634]:
+                - generic [ref=e635]:
+                  - text: Source notes
+                  - paragraph [ref=e636]: Add short notes from calls, transcripts, or extracts. They stay with the current working copy and version snapshots.
+                - button "Add note" [ref=e637]
+              - article [ref=e639]:
+                - generic [ref=e640]:
+                  - generic [ref=e641]: Note 1
+                  - button "Remove" [ref=e642]
+                - generic [ref=e643]:
+                  - generic [ref=e644]: Source label
+                  - textbox "Source label" [ref=e645]:
+                    - /placeholder: Call note, transcript, file extract
+                    - text: overview notes
+                - generic [ref=e646]:
+                  - generic [ref=e647]: Note
+                  - textbox "Note" [ref=e648]:
+                    - /placeholder: Capture the evidence in one or two sentences.
+                    - text: North Star needs a redesign, migration support, and analytics cleanup before proposal drafting.
+          - region "Discovery record" [ref=e649]:
+            - generic [ref=e650]:
+              - generic [ref=e651]:
+                - text: Discovery record
+                - heading "Discovery record" [level=2] [ref=e652]
+              - generic [ref=e653]: No current discovery.
+            - generic [ref=e654]:
+              - generic [ref=e655]:
+                - heading "No current discovery." [level=3] [ref=e656]
+                - paragraph [ref=e657]: Generate discovery from the current opportunity context, then keep the working copy current as source evidence changes.
+              - button "Generate discovery" [ref=e659]

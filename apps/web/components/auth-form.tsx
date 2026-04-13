@@ -246,20 +246,26 @@ export function AuthForm({ variant, returnUrl }: AuthFormProps) {
         <div className="auth-form__footer">
           {variant === "sign-in" ? (
             <>
-              <span>Need an account?</span>
-              <a href={buildSignUpUrl(returnUrl)}>Create account</a>
-              <span aria-hidden="true">·</span>
-              <a href={buildForgotPasswordUrl(returnUrl)}>Forgot password?</a>
+              <span className="auth-form__footer-copy">Need an account?</span>
+              <div className="auth-form__footer-links">
+                <a href={buildSignUpUrl(returnUrl)}>Create account</a>
+                <span aria-hidden="true">·</span>
+                <a href={buildForgotPasswordUrl(returnUrl)}>Forgot password?</a>
+              </div>
             </>
           ) : variant === "sign-up" ? (
             <>
-              <span>Already have an account?</span>
-              <a href={buildSignInUrl(returnUrl)}>Sign in</a>
+              <span className="auth-form__footer-copy">Already have an account?</span>
+              <div className="auth-form__footer-links">
+                <a href={buildSignInUrl(returnUrl)}>Sign in</a>
+              </div>
             </>
           ) : (
             <>
-              <span>Remembered your password?</span>
-              <a href={buildSignInUrl(returnUrl)}>Back to sign in</a>
+              <span className="auth-form__footer-copy">Remembered your password?</span>
+              <div className="auth-form__footer-links">
+                <a href={buildSignInUrl(returnUrl)}>Back to sign in</a>
+              </div>
             </>
           )}
         </div>

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.auth_routes import router as auth_router
+from app.dashboard_routes import router as dashboard_router
 from app.opportunity_file_routes import router as opportunity_file_router
 from app.opportunity_input_routes import router as opportunity_input_router
 from app.opportunity_routes import router as opportunity_router
@@ -32,5 +33,6 @@ def create_draft(
 router.include_router(opportunity_router)
 router.include_router(opportunity_input_router)
 router.include_router(opportunity_file_router)
+router.include_router(dashboard_router)
 router.include_router(auth_router)
 router.include_router(workspace_router)

@@ -1,0 +1,236 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e49] [cursor=pointer]:
+    - img [ref=e50]
+  - alert [ref=e53]
+  - link "Skip to main content" [ref=e307] [cursor=pointer]:
+    - /url: "#product-main-content"
+  - main [ref=e308]:
+    - complementary [ref=e309]:
+      - generic [ref=e310]:
+        - generic [ref=e311]: ProposalFlow AI
+        - strong [ref=e312]: North Star Studio
+        - paragraph [ref=e313]: Proposal-ready command center
+      - navigation "Primary product navigation" [ref=e314]:
+        - link "Dashboard" [ref=e315] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e316]
+          - generic [ref=e321]: Dashboard
+        - link "Opportunities" [ref=e322] [cursor=pointer]:
+          - /url: /opportunities
+          - img [ref=e323]
+          - generic [ref=e327]: Opportunities
+        - link "Templates & Rules" [ref=e328] [cursor=pointer]:
+          - /url: /templates-rules
+          - img [ref=e329]
+          - generic [ref=e330]: Templates & Rules
+        - link "Billing" [ref=e331] [cursor=pointer]:
+          - /url: /billing
+          - img [ref=e332]
+          - generic [ref=e334]: Billing
+        - link "Settings" [ref=e335] [cursor=pointer]:
+          - /url: /settings
+          - img [ref=e336]
+          - generic [ref=e339]: Settings
+      - generic [ref=e340]:
+        - generic [ref=e341]: Web app only
+        - paragraph [ref=e342]: Desktop and laptop workflow surface for intake, resume, and handoff.
+    - generic [ref=e343]:
+      - generic [ref=e345]:
+        - generic [ref=e346]: Lead Brief workspace
+        - heading "Lead Brief" [level=1] [ref=e347]
+        - paragraph [ref=e348]: Shape the current opportunity into a brief you can trust, version, and hand off.
+      - generic [ref=e350]:
+        - generic [ref=e351]:
+          - generic [ref=e352]:
+            - generic [ref=e353]: Lead Brief workspace
+            - heading "Current brief" [level=2] [ref=e354]
+            - paragraph [ref=e355]: Shape the current opportunity into a brief you can trust, version, and hand off.
+          - generic [ref=e356]:
+            - generic [ref=e357]: Revision 1
+            - generic [ref=e358]: North Star Studio · Lead Brief
+            - navigation "Opportunity workflow" [ref=e359]:
+              - generic [ref=e360]:
+                - generic [ref=e361]: "1"
+                - generic [ref=e362]: Lead Intake
+              - generic [ref=e363]:
+                - generic [ref=e364]: "2"
+                - generic [ref=e365]: Lead Brief
+              - generic [ref=e366]:
+                - generic [ref=e367]: "3"
+                - generic [ref=e368]: Discovery
+              - generic [ref=e369]:
+                - generic [ref=e370]: "4"
+                - generic [ref=e371]: Proposal Draft
+              - generic [ref=e372]:
+                - generic [ref=e373]: "5"
+                - generic [ref=e374]: Follow-up
+        - generic [ref=e375]:
+          - region "Source material" [ref=e376]:
+            - generic [ref=e377]:
+              - generic [ref=e378]:
+                - text: Source material
+                - heading "Source material" [level=2] [ref=e379]
+              - generic [ref=e380]: Current revision 1
+            - generic [ref=e381]:
+              - generic [ref=e382]:
+                - generic [ref=e383]: Opportunity
+                - paragraph [ref=e384]: North Star redesign
+              - generic [ref=e385]:
+                - generic [ref=e386]: Company
+                - paragraph [ref=e387]: North Star Studio
+              - generic [ref=e388]:
+                - generic [ref=e389]: Source type
+                - paragraph [ref=e390]: manual
+            - generic [ref=e391]:
+              - generic [ref=e392]: Opportunity intake
+              - generic [ref=e393]: Manual notes
+              - generic [ref=e394]: Updated Apr 13, 4:17 PM
+            - generic [ref=e395]:
+              - generic [ref=e396]: Source excerpt
+              - paragraph [ref=e397]: North Star needs a redesign, migration support, and analytics cleanup before proposal drafting.
+            - paragraph [ref=e398]: The source pane stays read-first so the active brief always has a provenance anchor.
+          - region "Structured brief" [ref=e399]:
+            - generic [ref=e400]:
+              - generic [ref=e401]:
+                - text: Structured brief
+                - heading "Structured brief" [level=2] [ref=e402]
+              - generic [ref=e403]: Revision 1
+            - generic [ref=e404]:
+              - generic [ref=e405]:
+                - button "Save current" [ref=e406]
+                - button "Save version" [ref=e407]
+                - button "Regenerate brief" [ref=e408]
+                - button "Versions" [ref=e409]
+              - generic [ref=e410]:
+                - button "Copy summary" [ref=e411]
+                - link "Continue to Discovery" [ref=e412] [cursor=pointer]:
+                  - /url: /opportunities/opp_gONHKK88c7kUv6fS/discovery
+            - generic [ref=e413]:
+              - region "Core identity" [ref=e414]:
+                - generic [ref=e415]:
+                  - heading "Core identity" [level=3] [ref=e416]
+                  - paragraph [ref=e417]: Keep the right-hand brief current while the source pane stays fixed.
+                - generic [ref=e418]:
+                  - article [ref=e419]:
+                    - generic [ref=e420]:
+                      - generic [ref=e421]:
+                        - generic [ref=e422]: Client / company
+                        - paragraph [ref=e423]: Anchor the brief to the buying company.
+                      - generic [ref=e424]: Confirmed
+                    - generic [ref=e425]:
+                      - generic [ref=e426]: Client / company
+                      - textbox "Client / company" [ref=e427]: North Star Studio
+                    - generic [ref=e428]:
+                      - paragraph [ref=e429]: "From source: North Star Studio"
+                      - button "Confirm" [ref=e430]
+                  - article [ref=e431]:
+                    - generic [ref=e432]:
+                      - generic [ref=e433]:
+                        - generic [ref=e434]: Contact
+                        - paragraph [ref=e435]: Who we are speaking with and how to reach them.
+                      - generic [ref=e436]: Missing
+                    - generic [ref=e437]:
+                      - generic [ref=e438]: Contact
+                      - textbox "Contact" [ref=e439]
+                    - generic [ref=e440]:
+                      - paragraph [ref=e441]: No source excerpt captured yet.
+                      - button "Confirm" [ref=e442]
+              - region "Request summary" [ref=e443]:
+                - generic [ref=e444]:
+                  - heading "Request summary" [level=3] [ref=e445]
+                  - paragraph [ref=e446]: Keep the right-hand brief current while the source pane stays fixed.
+                - generic [ref=e447]:
+                  - article [ref=e448]:
+                    - generic [ref=e449]:
+                      - generic [ref=e450]:
+                        - generic [ref=e451]: Requested service
+                        - paragraph [ref=e452]: The request as the opportunity described it.
+                      - generic [ref=e453]: Confirmed
+                    - generic [ref=e454]:
+                      - generic [ref=e455]: Requested service
+                      - textbox "Requested service" [ref=e456]: Website redesign and migration support
+                    - generic [ref=e457]:
+                      - paragraph [ref=e458]: "From source: Website redesign and migration support"
+                      - button "Confirm" [ref=e459]
+                  - article [ref=e460]:
+                    - generic [ref=e461]:
+                      - generic [ref=e462]:
+                        - generic [ref=e463]: Business context
+                        - paragraph [ref=e464]: What is happening in the account and why this matters now.
+                      - generic [ref=e465]: Inferred
+                    - generic [ref=e466]:
+                      - generic [ref=e467]: Business context
+                      - textbox "Business context" [ref=e468]: North Star needs a redesign, migration support, and analytics cleanup before proposal drafting.
+                    - generic [ref=e469]:
+                      - paragraph [ref=e470]: "From source: North Star needs a redesign, migration support, and analytics cleanup before proposal drafting."
+                      - button "Confirm" [ref=e471]
+              - region "Decision context" [ref=e472]:
+                - generic [ref=e473]:
+                  - heading "Decision context" [level=3] [ref=e474]
+                  - paragraph [ref=e475]: Keep the right-hand brief current while the source pane stays fixed.
+                - generic [ref=e476]:
+                  - article [ref=e477]:
+                    - generic [ref=e478]:
+                      - generic [ref=e479]:
+                        - generic [ref=e480]: Urgency / timeline
+                        - paragraph [ref=e481]: When the work needs to move and any milestone pressure.
+                      - generic [ref=e482]: Missing
+                    - generic [ref=e483]:
+                      - generic [ref=e484]: Urgency / timeline
+                      - textbox "Urgency / timeline" [ref=e485]
+                    - generic [ref=e486]:
+                      - paragraph [ref=e487]: No source excerpt captured yet.
+                      - button "Confirm" [ref=e488]
+                  - article [ref=e489]:
+                    - generic [ref=e490]:
+                      - generic [ref=e491]:
+                        - generic [ref=e492]: Budget signal
+                        - paragraph [ref=e493]: Any pricing, scope, or budget cues worth preserving.
+                      - generic [ref=e494]: Missing
+                    - generic [ref=e495]:
+                      - generic [ref=e496]: Budget signal
+                      - textbox "Budget signal" [ref=e497]
+                    - generic [ref=e498]:
+                      - paragraph [ref=e499]: No source excerpt captured yet.
+                      - button "Confirm" [ref=e500]
+              - region "Judgment area" [ref=e501]:
+                - generic [ref=e502]:
+                  - heading "Judgment area" [level=3] [ref=e503]
+                  - paragraph [ref=e504]: Keep the right-hand brief current while the source pane stays fixed.
+                - generic [ref=e505]:
+                  - article [ref=e506]:
+                    - generic [ref=e507]:
+                      - generic [ref=e508]:
+                        - generic [ref=e509]: Fit assessment
+                        - paragraph [ref=e510]: Your judgment about whether this is a fit and why.
+                      - generic [ref=e511]: Inferred
+                    - generic [ref=e512]:
+                      - generic [ref=e513]: Fit assessment
+                      - textbox "Fit assessment" [ref=e514]: Appears well suited for a redesign-led engagement.
+                    - generic [ref=e515]:
+                      - paragraph [ref=e516]: "From source: North Star needs a redesign, migration support, and analytics cleanup before proposal drafting."
+                      - button "Confirm" [ref=e517]
+                  - article [ref=e518]:
+                    - generic [ref=e519]:
+                      - generic [ref=e520]:
+                        - generic [ref=e521]: Missing information
+                        - paragraph [ref=e522]: What still needs confirmation before Discovery.
+                      - generic [ref=e523]: Needs Review
+                    - generic [ref=e524]:
+                      - generic [ref=e525]: Missing information
+                      - textbox "Missing information" [ref=e526]: Timeline, budget signal, and decision process remain unconfirmed.
+                    - generic [ref=e527]:
+                      - paragraph [ref=e528]: No source excerpt captured yet.
+                      - button "Confirm" [ref=e529]
+                  - article [ref=e530]:
+                    - generic [ref=e531]:
+                      - generic [ref=e532]:
+                        - generic [ref=e533]: Recommended next step
+                        - paragraph [ref=e534]: The next action the team should take from this brief.
+                      - generic [ref=e535]: Confirmed
+                    - generic [ref=e536]:
+                      - generic [ref=e537]: Recommended next step
+                      - textbox "Recommended next step" [ref=e538]: Confirm timeline and budget before Discovery.
+                    - generic [ref=e539]:
+                      - paragraph [ref=e540]: "From source: Workflow rule."
+                      - button "Confirm" [ref=e541]
