@@ -63,6 +63,17 @@ export const LEAD_BRIEF_FIELD_GROUPS: Array<{ title: string; fields: LeadBriefFi
   },
 ];
 
+export type LeadBriefSnapshotSection = {
+  title: string;
+  fields: Array<{
+    key: LeadBriefFieldKey;
+    label: string;
+    stateLabel: string;
+    value: string | null;
+    sourceExcerpt: string | null;
+  }>;
+};
+
 export function formatLeadBriefFieldState(state: LeadBriefFieldState) {
   switch (state) {
     case "confirmed":
@@ -90,3 +101,15 @@ export function buildLeadBriefSummary(fields: LeadBriefFields) {
     .join("\n");
 }
 
+export function buildLeadBriefSnapshotSections(fields: LeadBriefFields): LeadBriefSnapshotSection[] {
+  return LEAD_BRIEF_FIELD_GROUPS.map((group) => ({
+    title: group.title,
+    fields: group.fields.map((fieldKey) => ({
+      key: fieldKey,
+      label: LEAD_BRIEF_FIELD_LABELS[fieldKey],
+      stateLabel: formatLeadBriefFieldState(fields[fieldKey].state),
+      value: fields[fieldKey].value,
+      sourceExcerpt: fields[fieldKey].source_excerpt,
+    })),
+  }));
+}

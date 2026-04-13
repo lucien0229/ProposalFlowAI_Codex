@@ -79,10 +79,20 @@ test.describe("lead brief workspace", () => {
       ),
       page.getByRole("button", { name: "Save version" }).click(),
     ]);
-    await page.getByRole("button", { name: "Versions" }).click();
-    await expect(page.getByTestId("lead-brief-version-drawer")).toBeVisible({ timeout: 15_000 });
+    const versionsButton = page.getByRole("button", { name: "Versions" });
+    await expect(versionsButton).toHaveAttribute("aria-controls", "lead-brief-version-drawer");
+    await expect(versionsButton).toHaveAttribute("aria-expanded", "false");
+    await versionsButton.click();
+    await expect(versionsButton).toHaveAttribute("aria-expanded", "true");
+
+    const versionDrawer = page.getByTestId("lead-brief-version-drawer");
+    await expect(versionDrawer).toBeVisible({ timeout: 15_000 });
     await expect(page.getByRole("button", { name: /Version 1/ })).toBeVisible({ timeout: 15_000 });
     await expect(page.getByRole("button", { name: "Restore" })).toBeVisible({ timeout: 15_000 });
+    await expect(versionDrawer.getByText("Urgency / timeline", { exact: true })).toBeVisible({ timeout: 15_000 });
+    await expect(versionDrawer.getByText("Budget signal", { exact: true })).toBeVisible({ timeout: 15_000 });
+    await expect(versionDrawer.getByText("Missing information", { exact: true })).toBeVisible({ timeout: 15_000 });
+    await expect(versionDrawer.getByText("Recommended next step", { exact: true })).toBeVisible({ timeout: 15_000 });
 
     const businessContextCard = page.locator('[data-field-key="business_context"]');
     const businessContextInput = businessContextCard.getByLabel("Business context");

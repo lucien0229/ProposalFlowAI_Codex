@@ -5,7 +5,11 @@ import { BUSINESS_ROUTE_PATHS } from "@proposalflow/shared-config";
 import type { LeadBriefCurrentResource, LeadBriefFields, LeadBriefFieldKey, LeadBriefVersion } from "@proposalflow/shared-types";
 
 import { ProductStateBlock } from "@/components/product-state-block";
-import { LEAD_BRIEF_PAGE_COPY, LEAD_BRIEF_FIELD_GROUPS, buildLeadBriefSummary } from "@/lib/lead-brief-copy";
+import {
+  LEAD_BRIEF_PAGE_COPY,
+  LEAD_BRIEF_FIELD_GROUPS,
+  buildLeadBriefSnapshotSections,
+} from "@/lib/lead-brief-copy";
 import { LeadBriefFieldCard } from "@/components/opportunities/lead-brief-field-card";
 
 type LeadBriefOutputPaneProps = {
@@ -38,6 +42,10 @@ function ActionGroup({ children }: { children: ReactNode }) {
   return <div className="lead-brief-output-pane__actions">{children}</div>;
 }
 
+function formatVersionSnapshotValue(value: string | null) {
+  return value && value.trim() ? value : "No value captured yet.";
+}
+
 export function LeadBriefOutputPane({
   opportunityId,
   currentResource,
@@ -63,6 +71,8 @@ export function LeadBriefOutputPane({
   onFieldChange,
   onFieldConfirm,
 }: LeadBriefOutputPaneProps) {
+  const versionDrawerId = "lead-brief-version-drawer";
+
   if (workspaceState === "loading") {
     return (
       <section
@@ -187,7 +197,13 @@ export function LeadBriefOutputPane({
           >
             {LEAD_BRIEF_PAGE_COPY.regenerate}
           </button>
-          <button type="button" className="product-button product-button--ghost" onClick={onToggleDrawer}>
+          <button
+            type="button"
+            className="product-button product-button--ghost"
+            onClick={onToggleDrawer}
+            aria-expanded={drawerOpen}
+            aria-controls={versionDrawerId}
+          >
             {LEAD_BRIEF_PAGE_COPY.versions}
           </button>
         </ActionGroup>
@@ -244,11 +260,16 @@ export function LeadBriefOutputPane({
       </div>
 
       {drawerOpen ? (
-        <aside className="lead-brief-version-drawer" data-testid="lead-brief-version-drawer">
+        <aside
+          className="lead-brief-version-drawer"
+          data-testid="lead-brief-version-drawer"
+          id={versionDrawerId}
+          aria-labelledby="lead-brief-version-drawer-heading"
+        >
           <div className="lead-brief-version-drawer__header">
             <div>
               <span className="panel-kicker">{LEAD_BRIEF_PAGE_COPY.versions}</span>
-              <h3>Version history</h3>
+              <h3 id="lead-brief-version-drawer-heading">Version history</h3>
             </div>
             <button type="button" className="product-button product-button--ghost" onClick={onToggleDrawer} disabled={isWorking}>
               Close
@@ -282,8 +303,35 @@ export function LeadBriefOutputPane({
                 <>
                   <p className="lead-brief-version-drawer__preview-title">
                     Version {selectedVersion.version_no}
+                    {selectedVersion.saved_by_name ? ` · ${selectedVersion.saved_by_name}` : ""}
                   </p>
-                  <pre>{buildLeadBriefSummary(selectedVersion.fields)}</pre>
+                  <div className="lead-brief-version-drawer__snapshot" data-testid="lead-brief-version-snapshot">
+                    {buildLeadBriefSnapshotSections(selectedVersion.fields).map((section, index) => (
+                      <section
+                        key={section.title}
+                        className="lead-brief-version-drawer__snapshot-section"
+                        aria-labelledby={`lead-brief-version-snapshot-section-${index}`}
+                      >
+                        <h4 id={`lead-brief-version-snapshot-section-${index}`}>{section.title}</h4>
+                        <div className="lead-brief-version-drawer__snapshot-grid">
+                          {section.fields.map((field) => (
+                            <div key={field.key} className="lead-brief-version-drawer__snapshot-field" data-state={field.stateLabel}>
+                              <div className="lead-brief-version-drawer__snapshot-field-header">
+                                <span className="panel-kicker">{field.label}</span>
+                                <span className="product-chip">{field.stateLabel}</span>
+                              </div>
+                              <p className="lead-brief-version-drawer__snapshot-field-value">
+                                {formatVersionSnapshotValue(field.value)}
+                              </p>
+                              <p className="lead-brief-version-drawer__snapshot-field-source">
+                                {field.sourceExcerpt ? `Source: ${field.sourceExcerpt}` : "No source excerpt captured yet."}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    ))}
+                  </div>
                   {restoreTargetVersionNo === selectedVersion.version_no ? (
                     <div className="lead-brief-version-drawer__restore">
                       <p>{LEAD_BRIEF_PAGE_COPY.restoreWarning}</p>
