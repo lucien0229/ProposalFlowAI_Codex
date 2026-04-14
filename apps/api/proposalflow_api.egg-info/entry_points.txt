@@ -1,0 +1,2 @@
+[console_scripts]
+proposalflow-api = app.main:run
