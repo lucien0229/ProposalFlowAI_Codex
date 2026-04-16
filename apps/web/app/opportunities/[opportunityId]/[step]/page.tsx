@@ -2,6 +2,7 @@ import { ProductShell } from "@/components/product-shell";
 import { OpportunityIntakeSurface } from "@/components/opportunities/opportunity-intake-surface";
 import { LeadBriefWorkspace } from "@/components/opportunities/lead-brief-workspace";
 import { DiscoveryWorkspace } from "@/components/opportunities/discovery-workspace";
+import { ProposalDraftWorkspace } from "@/components/opportunities/proposal-draft-workspace";
 import { fetchOpportunityIntakeDetail } from "@/lib/opportunities-api";
 import { ProductApiError } from "@/lib/product-api";
 import { requireBusinessContext } from "@/lib/server-business-context";
@@ -54,6 +55,49 @@ export default async function OpportunityStepRoute({
             pageTitle="Discovery"
             pageDescription="Capture the evidence, keep the current discovery record versioned, and hand off to Proposal Draft."
             eyebrow="Discovery workspace"
+          >
+            <ProductStateBlock
+              state="error"
+              title="Opportunity not found."
+              body="Return to Opportunities and reopen the record."
+              detail="The requested opportunity record is missing or unavailable."
+              primaryAction={{
+                label: "Back to opportunities",
+                href: "/opportunities",
+              }}
+            />
+          </ProductShell>
+        );
+      }
+
+      throw caughtError;
+    }
+  }
+
+  if (resolvedParams.step === OPPORTUNITY_STEP_ROUTE_SEGMENTS.proposal_draft) {
+    try {
+      const detail = await fetchOpportunityIntakeDetail(resolvedParams.opportunityId, {
+        cookieHeader,
+      });
+
+      return (
+        <ProductShell
+          workspaceName={bootstrap.workspace?.name ?? null}
+          pageTitle="Proposal Draft"
+          pageDescription="Shape the current brief, discovery, and rules into a proposal-ready draft without losing state visibility."
+          eyebrow="Proposal Draft workspace"
+        >
+          <ProposalDraftWorkspace opportunityId={resolvedParams.opportunityId} opportunityDetail={detail} />
+        </ProductShell>
+      );
+    } catch (caughtError) {
+      if (caughtError instanceof ProductApiError && caughtError.status === 404) {
+        return (
+          <ProductShell
+            workspaceName={bootstrap.workspace?.name ?? null}
+            pageTitle="Proposal Draft"
+            pageDescription="Shape the current brief, discovery, and rules into a proposal-ready draft without losing state visibility."
+            eyebrow="Proposal Draft workspace"
           >
             <ProductStateBlock
               state="error"

@@ -20,12 +20,14 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 - ✓ Product pages stay blocked until workspace setup is complete — Phase 2
 - ✓ Dashboard provides clear entry points to start a new opportunity and resume unfinished work — Phase 3
 - ✓ Opportunities list supports search, filter, sort, archive, and opening an opportunity — Phase 3
+- ✓ Current resource, version history, restore, and overwrite-safe editing semantics are live across Lead Brief, Discovery, and Proposal Draft — Phases 5-7
+- ✓ Workspace rules now compose template defaults, workspace baseline rules, and opportunity overrides into a live effective ruleset — Phase 7
+- ✓ Proposal Draft now ships with truthful dependency gating, chapter editing, regenerate confirmation, save/version/restore, copy/export, and backend-backed warning states — Phase 7
 
 ### Active
 
 - Customer-side MVP 必须交付为 shipping UI，而不是 rendered specification page。
 - 主链路必须围绕 `Opportunity / Lead Intake → Lead Brief → Discovery Intelligence → Proposal Draft → Follow-up` 闭环推进。
-- 需要正式落实 current resource、version history 和 restore 语义，且不能无提示覆盖用户编辑内容。
 - Billing / Trial / restriction_reason / 只读限制矩阵必须在产品与 API 两侧同时成立。
 - 工程必须采用单仓 monorepo，并严格区分 `apps/web`、`apps/admin`、`apps/api`、`apps/worker` 与共享 packages。
 - Admin 端本轮只做边界预留或最小占位，不作为首发主体。
@@ -60,6 +62,11 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 - **Integrations**: Auth、OpenAI、Stripe、文件处理和 worker 都必须纳入实施计划。
 - **Admin Boundary**: admin 只能作为独立入口和边界预留存在，不能混入 customer web。
 
+## Current State
+
+- Phase 7 is complete: Templates & Rules and Proposal Draft now form the shipped core drafting loop for the desktop web product.
+- The remaining roadmap focus moves to post-draft follow-up, billing/restriction hardening, minimal settings, and release readiness.
+
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
@@ -72,4 +79,4 @@ ProposalFlow AI 是一款面向小型服务型团队的 AI pre-proposal workflow
 | 后续 phase 尽可能使用 git worktree | 隔离主分支，降低阶段实现互相干扰 | ✓ Good |
 
 ---
-*Last updated: 2026-04-09 after Phase 3 closeout*
+*Last updated: 2026-04-14 after Phase 7 closeout*

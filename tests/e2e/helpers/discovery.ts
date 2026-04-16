@@ -1,7 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
 import { openPopulatedLeadBriefWorkspace } from "./lead-brief";
-import { createOpportunityAndOpenOverview } from "./opportunity-overview";
+import { createOpportunityAndOpenOverview, gotoOpportunityStep } from "./opportunity-overview";
 
 export function getDiscoveryWorkspace(page: Page) {
   return {
@@ -29,10 +29,147 @@ export async function openEmptyDiscoveryWorkspace(page: Page, baseURL: string) {
 
 export async function openDiscoveryWorkspaceWithLeadBrief(page: Page, baseURL: string) {
   const opportunityId = await openPopulatedLeadBriefWorkspace(page, baseURL);
-  await page.goto(new URL(`/opportunities/${opportunityId}/discovery`, baseURL).toString(), {
-    waitUntil: "domcontentloaded",
-  });
+  await gotoOpportunityStep(page, baseURL, opportunityId, "discovery");
   await expect(page.getByRole("button", { name: "Generate discovery" })).toBeVisible({ timeout: 15_000 });
+  return opportunityId;
+}
+
+export async function generateDiscovery(page: Page, opportunityId: string) {
+  await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.url().includes(`/api/v1/opportunities/${opportunityId}/discovery/generate`) &&
+        response.request().method() === "POST" &&
+        response.status() === 202,
+    ),
+    page.getByRole("button", { name: "Generate discovery" }).click(),
+  ]);
+
+  await expect(page.getByRole("button", { name: "Save current" })).toBeVisible({ timeout: 15_000 });
+}
+
+export async function expectProposalDraftReady(page: Page) {
+  await expect(page.getByTestId("proposal-draft-header").getByRole("heading", { name: "Proposal Draft" })).toBeVisible({
+    timeout: 15_000,
+  });
+  await expect(page.getByTestId("proposal-draft-rules-summary")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId("proposal-draft-loading-state")).toHaveCount(0, { timeout: 15_000 });
+  await expect(page.getByRole("button", { name: "Save current" })).toBeVisible({ timeout: 15_000 });
+  await expect(
+    page.getByTestId("proposal-draft-stage").getByRole("heading", { name: "Executive Summary" }),
+  ).toBeVisible({ timeout: 15_000 });
+}
+
+async function markDiscoveryReady(page: Page, opportunityId: string) {
+  const csrfToken = await page.evaluate(() => {
+    const match = document.cookie
+      .split(";")
+      .map((entry) => entry.trim())
+      .find((entry) => entry.startsWith("pf_csrf_token="));
+    return match ? decodeURIComponent(match.slice("pf_csrf_token=".length)) : null;
+  });
+
+  if (!csrfToken) {
+    throw new Error("Expected a browser CSRF token for discovery ready-state setup.");
+  }
+
+  const patchResult = await page.evaluate(
+    async ({ opportunityId, csrfToken }) => {
+      const workspaceResponse = await fetch(`/api/v1/opportunities/${opportunityId}/discovery`, {
+        credentials: "include",
+      });
+
+      const workspaceBody = await workspaceResponse.text();
+      if (!workspaceResponse.ok) {
+        return {
+          status: workspaceResponse.status,
+          bodyText: workspaceBody,
+        };
+      }
+
+      const workspacePayload = JSON.parse(workspaceBody) as {
+        discovery: {
+          current_revision_no: number;
+          fields: Record<string, { value: string | null; state: string; source_excerpt: string | null }>;
+          source_notes: Array<{ content: string; source_label: string | null }>;
+        } | null;
+      };
+
+      if (!workspacePayload.discovery) {
+        return {
+          status: 500,
+          bodyText: "Discovery current resource was missing during ready-state setup.",
+        };
+      }
+
+      const readyFieldStates: Record<string, "confirmed" | "inferred"> = {
+        goals: "confirmed",
+        constraints: "confirmed",
+        ambiguities: "inferred",
+        risk_flags: "inferred",
+        follow_up_questions: "confirmed",
+      };
+      const fields = Object.fromEntries(
+        Object.entries(workspacePayload.discovery.fields).map(([key, field]) => [
+          key,
+          {
+            ...field,
+            state: readyFieldStates[key] ?? "confirmed",
+            source_excerpt:
+              field.source_excerpt ??
+              field.value ??
+              "Discovery readiness was confirmed during browser setup.",
+          },
+        ]),
+      );
+
+      const patchResponse = await fetch(`/api/v1/opportunities/${opportunityId}/discovery`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "content-type": "application/json",
+          "x-csrf-token": csrfToken,
+        },
+        body: JSON.stringify({
+          expected_revision_no: workspacePayload.discovery.current_revision_no,
+          fields,
+          source_notes: workspacePayload.discovery.source_notes ?? [],
+        }),
+      });
+
+      return {
+        status: patchResponse.status,
+        bodyText: await patchResponse.text(),
+      };
+    },
+    { opportunityId, csrfToken },
+  );
+
+  if (patchResult.status !== 200) {
+    throw new Error(`Expected discovery ready-state setup to save cleanly, got ${patchResult.status}: ${patchResult.bodyText}`);
+  }
+}
+
+export async function openProposalDraftWorkspaceWithDiscoveryReady(page: Page, baseURL: string) {
+  const opportunityId = await openProposalDraftWorkspaceWithoutCurrentDraft(page, baseURL);
+  await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.url().includes(`/api/v1/opportunities/${opportunityId}/proposal-draft/generate`) &&
+        response.request().method() === "POST" &&
+        response.status() === 202,
+    ),
+    page.getByRole("button", { name: "Generate draft" }).click(),
+  ]);
+  await expectProposalDraftReady(page);
+  return opportunityId;
+}
+
+export async function openProposalDraftWorkspaceWithoutCurrentDraft(page: Page, baseURL: string) {
+  const opportunityId = await openDiscoveryWorkspaceWithLeadBrief(page, baseURL);
+  await generateDiscovery(page, opportunityId);
+  await markDiscoveryReady(page, opportunityId);
+  await gotoOpportunityStep(page, baseURL, opportunityId, "proposal-draft");
   return opportunityId;
 }
 

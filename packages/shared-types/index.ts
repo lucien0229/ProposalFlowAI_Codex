@@ -12,7 +12,10 @@ export type ProductState =
   | "success";
 export type SortDirection = "asc" | "desc";
 export type WorkspaceIndustryType = "web_development_agency" | "product_ux_agency";
-export type WorkspaceTemplateKey = "development_agency" | "product_ux_agency";
+export type WorkspaceTemplateKey =
+  | "development_agency"
+  | "product_ux_agency"
+  | "web_delivery_proposal";
 export type WorkspaceTonePreference = "balanced" | "direct" | "consultative";
 export type OpportunitySourceType = "manual" | "email_thread" | "pdf_upload";
 export type OpportunityCurrentStep =
@@ -89,6 +92,7 @@ export const WORKSPACE_INDUSTRY_TYPES = [
 export const WORKSPACE_TEMPLATE_KEYS = [
   "development_agency",
   "product_ux_agency",
+  "web_delivery_proposal",
 ] as const satisfies readonly WorkspaceTemplateKey[];
 export const WORKSPACE_TONE_PREFERENCES = [
   "balanced",
@@ -495,3 +499,254 @@ export type DiscoveryGenerateResponse = {
 export type DiscoverySourceNotesRequest = {
   source_notes: DiscoverySourceNotes;
 };
+
+export type TemplateDefinition = {
+  key: WorkspaceTemplateKey;
+  name: string;
+  industry_scope: WorkspaceIndustryType;
+  section_order: ProposalDraftSectionKey[];
+  required_sections: ProposalDraftSectionKey[];
+  default_service_modules: string[];
+  is_active: boolean;
+};
+
+export type WorkspaceRuleSet = {
+  workspace_id: string;
+  template_key: WorkspaceTemplateKey;
+  tone_profile: WorkspaceTonePreference;
+  preferred_terminology: string[];
+  banned_terminology: string[];
+  default_assumptions: string[];
+  default_exclusions: string[];
+  service_modules: string[];
+  section_order: ProposalDraftSectionKey[];
+  required_sections: ProposalDraftSectionKey[];
+  default_cta_style: string;
+  updated_at: string;
+};
+
+export type WorkspaceRuleSetResponse = {
+  workspace_rule_set: WorkspaceRuleSet;
+  meta: {
+    source_of_truth: "workspace_rule_sets";
+  };
+};
+
+export type WorkspaceRuleSetUpdateRequest = {
+  expected_updated_at: string;
+  rule_set: WorkspaceRuleSet;
+};
+
+export type WorkspaceRuleValidationIssue = {
+  code: string;
+  field: string | null;
+  message: string;
+};
+
+export type WorkspaceRuleValidationSummary = {
+  field_errors: string[];
+  save_blockers: string[];
+};
+
+export type WorkspaceRuleValidationResponse = {
+  valid: boolean;
+  summary: WorkspaceRuleValidationSummary;
+};
+
+export type OpportunityRuleOverride = {
+  opportunity_id: string;
+  template_key_override: WorkspaceTemplateKey | null;
+  tone_profile_override: WorkspaceTonePreference | null;
+  assumptions_override: string[];
+  exclusions_override: string[];
+  service_modules_override: string[];
+  preferred_terminology_additions: string[];
+  banned_terminology_additions: string[];
+  default_cta_style_override: string | null;
+  updated_at: string;
+};
+
+export type EffectiveRuleSummary = {
+  template_key: WorkspaceTemplateKey;
+  tone_profile: WorkspaceTonePreference;
+  section_order: ProposalDraftSectionKey[];
+  required_sections: ProposalDraftSectionKey[];
+  assumptions_preview: string[];
+  exclusions_preview: string[];
+  template_label?: string;
+  preferred_terminology?: string[];
+  banned_terminology?: string[];
+  service_modules?: string[];
+  rule_sources?: {
+    template_definition: string;
+    workspace_rule_set: string;
+    opportunity_override: string | null;
+  };
+  has_override?: boolean;
+};
+
+export type OpportunityRuleOverrideResponse = {
+  override?: OpportunityRuleOverride | null;
+  effective_rule_summary?: EffectiveRuleSummary;
+  warning?: {
+    title: string;
+    message: string;
+  } | null;
+  cleared?: boolean;
+  meta?: {
+    source_of_truth: "opportunity_rule_overrides";
+  };
+};
+
+export type ProposalDraftSectionKey =
+  | "executive_summary"
+  | "objectives"
+  | "recommended_approach"
+  | "deliverables"
+  | "timeline"
+  | "assumptions"
+  | "exclusions"
+  | "next_steps";
+
+export type ProposalDraftSectionConfidence = "low" | "medium" | "high";
+
+export type ProposalDraftSection = {
+  key: ProposalDraftSectionKey;
+  label: string;
+  content: string;
+  last_edited_at: string | null;
+  last_generated_at: string | null;
+  is_user_edited: boolean;
+  confidence: ProposalDraftSectionConfidence;
+  warning: string | null;
+};
+
+export type ProposalDraftSections = Record<ProposalDraftSectionKey, ProposalDraftSection>;
+
+export type ProposalDraftWarning = {
+  code: string;
+  message: string;
+};
+
+export type ProposalDraftCurrentResource = {
+  id: string;
+  opportunity_id: string;
+  workspace_id: string;
+  template_key: WorkspaceTemplateKey;
+  current_revision_no: number;
+  latest_version_no: number;
+  sections: ProposalDraftSections;
+  confidence_notes: string[];
+  warnings: ProposalDraftWarning[];
+  effective_rule_summary: EffectiveRuleSummary;
+  has_override: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ProposalDraftVersionOrigin =
+  | "generate"
+  | "save_version"
+  | "restore"
+  | "regenerate_section";
+
+export type ProposalDraftVersionSummary = {
+  version_no: number;
+  version_origin: ProposalDraftVersionOrigin;
+  version_note: string | null;
+  saved_at: string;
+  saved_by_user_id: string | null;
+  saved_by_name: string | null;
+  template_key: WorkspaceTemplateKey;
+  sections: ProposalDraftSections;
+};
+
+export type ProposalDraftVersion = ProposalDraftVersionSummary;
+
+export type ProposalDraftVersionDetail = ProposalDraftCurrentResource &
+  ProposalDraftVersionSummary;
+
+export type ProposalDraftCurrentResourceResponse = {
+  proposal_draft: ProposalDraftCurrentResource | null;
+  versions: ProposalDraftVersionSummary[];
+};
+
+export type ProposalDraftVersionListResponse = {
+  items: ProposalDraftVersionSummary[];
+};
+
+export type ProposalDraftVersionDetailResponse = {
+  version: ProposalDraftVersionDetail;
+};
+
+export type ProposalDraftSaveCurrentRequest = {
+  expected_revision_no: number;
+  sections: ProposalDraftSections;
+};
+
+export type ProposalDraftSaveVersionRequest = {
+  expected_revision_no: number;
+  version_note: string | null;
+  sections: ProposalDraftSections;
+};
+
+export type ProposalDraftRestoreRequest = {
+  expected_revision_no: number;
+  version_no: number;
+};
+
+export type ProposalDraftGenerateRequest = {
+  template_key: WorkspaceTemplateKey;
+  use_opportunity_overrides: boolean;
+  force_low_confidence: boolean;
+};
+
+export type ProposalDraftGenerateResponse = {
+  status: "queued";
+  redirect_to: string;
+  proposal_draft: ProposalDraftCurrentResource | null;
+};
+
+export type ProposalDraftSectionRegenerateRequest = {
+  expected_revision_no: number;
+  overwrite_current_edit: boolean;
+};
+
+export type ProposalDraftConflictResponse = {
+  current_revision_no: number;
+  expected_revision_no: number;
+  latest_version_no: number | null;
+  message: string;
+  reload_hint: string;
+};
+
+export type ProposalDraftExportFormat = "text" | "markdown";
+
+export const PROPOSAL_DRAFT_SECTION_KEYS = [
+  "executive_summary",
+  "objectives",
+  "recommended_approach",
+  "deliverables",
+  "timeline",
+  "assumptions",
+  "exclusions",
+  "next_steps",
+] as const satisfies readonly ProposalDraftSectionKey[];
+
+export const PROPOSAL_DRAFT_SECTION_CONFIDENCE_LEVELS = [
+  "low",
+  "medium",
+  "high",
+] as const satisfies readonly ProposalDraftSectionConfidence[];
+
+export const PROPOSAL_DRAFT_VERSION_ORIGINS = [
+  "generate",
+  "save_version",
+  "restore",
+  "regenerate_section",
+] as const satisfies readonly ProposalDraftVersionOrigin[];
+
+export const PROPOSAL_DRAFT_EXPORT_FORMATS = [
+  "text",
+  "markdown",
+] as const satisfies readonly ProposalDraftExportFormat[];

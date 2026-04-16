@@ -1,7 +1,9 @@
+const isNextLint = process.argv.includes("lint");
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ??
   process.env.API_BASE_URL ??
-  (process.env.NODE_ENV === "production"
+  (process.env.NODE_ENV === "production" && !isNextLint
     ? (() => {
         throw new Error("NEXT_PUBLIC_API_BASE_URL or API_BASE_URL is required for production builds.");
       })()

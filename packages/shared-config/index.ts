@@ -110,13 +110,47 @@ export const buildDiscoveryVersionDetailApiPath = (opportunityId: string, versio
   `${buildDiscoveryVersionsApiPath(opportunityId)}/${versionNo}`;
 export const buildDiscoveryVersionRestoreApiPath = (opportunityId: string, versionNo: number) =>
   `${buildDiscoveryVersionDetailApiPath(opportunityId, versionNo)}/restore`;
+export const buildTemplatesApiPath = (): "/api/v1/templates" => `${API_V1_PREFIX}/templates`;
+export const buildWorkspaceRulesApiPath = (): "/api/v1/workspaces/current/rules" =>
+  `${API_V1_PREFIX}/workspaces/current/rules`;
+export const buildWorkspaceRulesValidateApiPath = (): "/api/v1/workspaces/current/rules/validate" =>
+  `${buildWorkspaceRulesApiPath()}/validate`;
+export const buildOpportunityEffectiveRulesApiPath = (opportunityId: string) =>
+  `${buildOpportunityDetailApiPath(opportunityId)}/rules/effective`;
+export const buildOpportunityRuleOverrideApiPath = (opportunityId: string) =>
+  `${buildOpportunityDetailApiPath(opportunityId)}/rules/override`;
+export const buildProposalDraftApiPath = (opportunityId: string) =>
+  `${buildOpportunityDetailApiPath(opportunityId)}/proposal-draft`;
+export const buildProposalDraftGenerateApiPath = (opportunityId: string) =>
+  `${buildProposalDraftApiPath(opportunityId)}/generate`;
+export const buildProposalDraftSaveVersionApiPath = (opportunityId: string) =>
+  `${buildProposalDraftApiPath(opportunityId)}/save-version`;
+export const buildProposalDraftVersionsApiPath = (opportunityId: string) =>
+  `${buildProposalDraftApiPath(opportunityId)}/versions`;
+export const buildProposalDraftVersionDetailApiPath = (opportunityId: string, versionNo: number) =>
+  `${buildProposalDraftVersionsApiPath(opportunityId)}/${versionNo}`;
+export const buildProposalDraftVersionRestoreApiPath = (
+  opportunityId: string,
+  versionNo: number,
+) => `${buildProposalDraftVersionDetailApiPath(opportunityId, versionNo)}/restore`;
+export const buildProposalDraftSectionRegenerateApiPath = (
+  opportunityId: string,
+  sectionKey: string,
+) => `${buildProposalDraftApiPath(opportunityId)}/sections/${sectionKey}/regenerate`;
+export const buildProposalDraftExportApiPath = (opportunityId: string) =>
+  `${buildProposalDraftApiPath(opportunityId)}/export`;
 
 export const OPPORTUNITY_API_ROUTE_TEMPLATES = {
+  templates: "/templates",
+  workspaceRules: "/workspaces/current/rules",
+  workspaceRulesValidate: "/workspaces/current/rules/validate",
   inputs: "/opportunities/${opportunityId}/inputs",
   fileUploadUrl: "/opportunities/${opportunityId}/files/upload-url",
   fileComplete: "/opportunities/${opportunityId}/files/${fileAssetId}/complete",
   fileDetail: "/opportunities/${opportunityId}/files/${fileAssetId}",
   fileRetry: "/opportunities/${opportunityId}/files/${fileAssetId}/retry",
+  effectiveRules: "/opportunities/${opportunityId}/rules/effective",
+  ruleOverride: "/opportunities/${opportunityId}/rules/override",
   leadBriefGenerate: "/opportunities/${opportunityId}/lead-brief/generate",
   leadBrief: "/opportunities/${opportunityId}/lead-brief",
   leadBriefSaveVersion: "/opportunities/${opportunityId}/lead-brief/save-version",
@@ -130,12 +164,25 @@ export const OPPORTUNITY_API_ROUTE_TEMPLATES = {
   discoveryVersions: "/opportunities/${opportunityId}/discovery/versions",
   discoveryVersionDetail: "/opportunities/${opportunityId}/discovery/versions/${versionNo}",
   discoveryVersionRestore: "/opportunities/${opportunityId}/discovery/versions/${versionNo}/restore",
+  proposalDraft: "/opportunities/${opportunityId}/proposal-draft",
+  proposalDraftGenerate: "/opportunities/${opportunityId}/proposal-draft/generate",
+  proposalDraftSaveVersion: "/opportunities/${opportunityId}/proposal-draft/save-version",
+  proposalDraftVersions: "/opportunities/${opportunityId}/proposal-draft/versions",
+  proposalDraftVersionDetail: "/opportunities/${opportunityId}/proposal-draft/versions/${versionNo}",
+  proposalDraftVersionRestore:
+    "/opportunities/${opportunityId}/proposal-draft/versions/${versionNo}/restore",
+  proposalDraftSectionRegenerate:
+    "/opportunities/${opportunityId}/proposal-draft/sections/${sectionKey}/regenerate",
+  proposalDraftExport: "/opportunities/${opportunityId}/proposal-draft/export",
 } as const;
 
 export const API_ROUTE_PATHS = {
   auth: `${API_V1_PREFIX}/auth`,
   authMe: `${API_V1_PREFIX}/auth/me`,
   workspaces: `${API_V1_PREFIX}/workspaces`,
+  templates: buildTemplatesApiPath(),
+  workspaceRules: buildWorkspaceRulesApiPath(),
+  workspaceRulesValidate: buildWorkspaceRulesValidateApiPath(),
   dashboardSummary: `${API_V1_PREFIX}/dashboard/summary`,
   opportunities: `${API_V1_PREFIX}/opportunities`,
   opportunityDetail: buildOpportunityDetailApiPath,
@@ -145,6 +192,8 @@ export const API_ROUTE_PATHS = {
   opportunityFileComplete: buildOpportunityFileCompleteApiPath,
   opportunityFileDetail: buildOpportunityFileDetailApiPath,
   opportunityFileRetry: buildOpportunityFileRetryApiPath,
+  opportunityEffectiveRules: buildOpportunityEffectiveRulesApiPath,
+  opportunityRuleOverride: buildOpportunityRuleOverrideApiPath,
   leadBriefGenerate: buildLeadBriefGenerateApiPath,
   leadBrief: buildLeadBriefApiPath,
   leadBriefSaveVersion: buildLeadBriefSaveVersionApiPath,
@@ -157,9 +206,33 @@ export const API_ROUTE_PATHS = {
   discoveryVersions: buildDiscoveryVersionsApiPath,
   discoveryVersionDetail: buildDiscoveryVersionDetailApiPath,
   discoveryVersionRestore: buildDiscoveryVersionRestoreApiPath,
+  proposalDraft: buildProposalDraftApiPath,
+  proposalDraftGenerate: buildProposalDraftGenerateApiPath,
+  proposalDraftSaveVersion: buildProposalDraftSaveVersionApiPath,
+  proposalDraftVersions: buildProposalDraftVersionsApiPath,
+  proposalDraftVersionDetail: buildProposalDraftVersionDetailApiPath,
+  proposalDraftVersionRestore: buildProposalDraftVersionRestoreApiPath,
+  proposalDraftSectionRegenerate: buildProposalDraftSectionRegenerateApiPath,
+  proposalDraftExport: buildProposalDraftExportApiPath,
 } as const;
 
 export const OPPORTUNITY_API_ROUTE_DEFINITIONS = {
+  listTemplates: {
+    method: "GET",
+    path: "GET /api/v1/templates",
+  },
+  workspaceRulesDetail: {
+    method: "GET",
+    path: "GET /api/v1/workspaces/current/rules",
+  },
+  updateWorkspaceRules: {
+    method: "PUT",
+    path: "PUT /api/v1/workspaces/current/rules",
+  },
+  validateWorkspaceRules: {
+    method: "POST",
+    path: "POST /api/v1/workspaces/current/rules/validate",
+  },
   detail: {
     method: "GET",
     path: "GET /api/v1/opportunities/{opportunity_id}",
@@ -195,6 +268,22 @@ export const OPPORTUNITY_API_ROUTE_DEFINITIONS = {
   retryFile: {
     method: "POST",
     path: "POST /api/v1/opportunities/{opportunity_id}/files/{file_asset_id}/retry",
+  },
+  opportunityEffectiveRules: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/rules/effective",
+  },
+  opportunityRuleOverrideDetail: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/rules/override",
+  },
+  updateOpportunityRuleOverride: {
+    method: "PUT",
+    path: "PUT /api/v1/opportunities/{opportunity_id}/rules/override",
+  },
+  clearOpportunityRuleOverride: {
+    method: "DELETE",
+    path: "DELETE /api/v1/opportunities/{opportunity_id}/rules/override",
   },
   generateLeadBrief: {
     method: "POST",
@@ -247,6 +336,42 @@ export const OPPORTUNITY_API_ROUTE_DEFINITIONS = {
   restoreDiscoveryVersion: {
     method: "POST",
     path: "POST /api/v1/opportunities/{opportunity_id}/discovery/versions/{version_no}/restore",
+  },
+  proposalDraftDetail: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/proposal-draft",
+  },
+  updateProposalDraft: {
+    method: "PATCH",
+    path: "PATCH /api/v1/opportunities/{opportunity_id}/proposal-draft",
+  },
+  generateProposalDraft: {
+    method: "POST",
+    path: "POST /api/v1/opportunities/{opportunity_id}/proposal-draft/generate",
+  },
+  saveProposalDraftVersion: {
+    method: "POST",
+    path: "POST /api/v1/opportunities/{opportunity_id}/proposal-draft/save-version",
+  },
+  proposalDraftVersions: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/proposal-draft/versions",
+  },
+  proposalDraftVersionDetail: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/proposal-draft/versions/{version_no}",
+  },
+  restoreProposalDraftVersion: {
+    method: "POST",
+    path: "POST /api/v1/opportunities/{opportunity_id}/proposal-draft/versions/{version_no}/restore",
+  },
+  regenerateProposalDraftSection: {
+    method: "POST",
+    path: "POST /api/v1/opportunities/{opportunity_id}/proposal-draft/sections/{section_key}/regenerate",
+  },
+  exportProposalDraft: {
+    method: "GET",
+    path: "GET /api/v1/opportunities/{opportunity_id}/proposal-draft/export",
   },
 } as const;
 

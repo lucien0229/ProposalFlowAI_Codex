@@ -1,9 +1,9 @@
 ---
-status: complete
+status: resolved
 phase: 07-proposal-draft-templates-rules
-source: [07-05-SUMMARY.md, 07-06-SUMMARY.md, 07-07-SUMMARY.md, 07-08-SUMMARY.md, 07-09-SUMMARY.md]
+source: [07-05-SUMMARY.md, 07-06-SUMMARY.md, 07-07-SUMMARY.md, 07-08-SUMMARY.md]
 started: 2026-04-14T03:00:54Z
-updated: 2026-04-15T00:03:15Z
+updated: 2026-04-14T04:44:42Z
 ---
 
 ## Current Test
@@ -86,18 +86,3 @@ blocked: 0
   missing:
     - "None."
   debug_session: ".planning/debug/phase-07-uat-gap-parallel-pw.md"
-
-- truth: "The documented full Phase 7 validation command should complete green from a fresh local environment."
-  status: resolved
-  reason: "Workspace rules validation now seeds template definitions before checking template keys, so the fresh-database API regression suite no longer fails with a false invalid-template error."
-  severity: major
-  test: 9
-  root_cause: "validate_workspace_rule_set_payload() required an existing template definition before the validation path had seeded the frozen template set, so a clean database rejected the valid `development_agency` template key during `/workspaces/current/rules/validate`."
-  artifacts:
-    - path: "apps/api/app/templates_rules_service.py"
-      issue: "The workspace rules validation flow read template definitions before calling ensure_template_definitions on a fresh database."
-    - path: "tests/api/test_templates_rules_api.py"
-      issue: "The validation regression expected required-sections guidance but hit invalid_template_key first on a clean database."
-  missing:
-    - "Seed template definitions before validating workspace rule template keys."
-  debug_session: ""

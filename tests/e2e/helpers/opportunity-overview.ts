@@ -21,6 +21,12 @@ const PRODUCT_ROUTE_STATES = [
 ] as const;
 
 export type ProductRouteState = (typeof PRODUCT_ROUTE_STATES)[number];
+export type OpportunityWorkflowStep =
+  | "overview"
+  | "lead-brief"
+  | "discovery"
+  | "proposal-draft"
+  | "follow-up";
 
 export function getOpportunityShell(page: Page) {
   return {
@@ -71,6 +77,17 @@ export async function createOpportunityAndOpenOverview(page: Page, baseURL: stri
 
 export async function gotoOverviewRoute(page: Page, baseURL: string, opportunityId: string) {
   await page.goto(new URL(`/opportunities/${opportunityId}/overview`, baseURL).toString());
+}
+
+export async function gotoOpportunityStep(
+  page: Page,
+  baseURL: string,
+  opportunityId: string,
+  step: OpportunityWorkflowStep,
+) {
+  await page.goto(new URL(`/opportunities/${opportunityId}/${step}`, baseURL).toString(), {
+    waitUntil: "domcontentloaded",
+  });
 }
 
 export async function gotoOverviewState(

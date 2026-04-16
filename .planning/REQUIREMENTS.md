@@ -43,9 +43,9 @@
 
 ### Rules, Proposal Draft, and Follow-up
 
-- [ ] **RULE-01**: Workspace rules can be edited, and the effective rules are derived from template + workspace rules + opportunity overrides.
-- [ ] **PROP-01**: Proposal Draft generation requires an existing current Lead Brief and base Discovery data.
-- [ ] **PROP-02**: Proposal Draft supports chapter editing, chapter-level regenerate with explicit overwrite confirmation, copy, export, and rule/confidence notices.
+- [x] **RULE-01**: Workspace rules can be edited, and the effective rules are derived from template + workspace rules + opportunity overrides.
+- [x] **PROP-01**: Proposal Draft generation requires an existing current Lead Brief and base Discovery data.
+- [x] **PROP-02**: Proposal Draft supports chapter editing, chapter-level regenerate with explicit overwrite confirmation, copy, export, and rule/confidence notices.
 - [ ] **FUP-01**: Follow-up generation requires an existing current Proposal Draft and returns subject, body, and CTA.
 - [ ] **FUP-02**: Follow-up supports scenario selection, editing, version history, restore, and copy.
 
@@ -120,9 +120,9 @@
 | BRIEF-02 | Phase 5 | Pending |
 | DISC-01 | Phase 6 | Pending |
 | DISC-02 | Phase 6 | Pending |
-| RULE-01 | Phase 7 | Pending |
-| PROP-01 | Phase 7 | Pending |
-| PROP-02 | Phase 7 | Pending |
+| RULE-01 | Phase 7 | Complete |
+| PROP-01 | Phase 7 | Complete |
+| PROP-02 | Phase 7 | Complete |
 | FUP-01 | Phase 8 | Pending |
 | FUP-02 | Phase 8 | Pending |
 | BILL-01 | Phase 9 | Pending |

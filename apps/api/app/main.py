@@ -8,11 +8,13 @@ from app.discovery_routes import router as discovery_router
 from app.file_processing_runtime import resolve_object_store
 from app.lead_brief_routes import router as lead_brief_router
 from app.product import router as product_router
+from app.proposal_draft_routes import router as proposal_draft_router
 from app.security import (
     require_admin_session,
     require_browser_csrf,
     require_web_session,
 )
+from app.templates_rules_routes import router as templates_rules_router
 
 API_V1_PREFIX = "/api/v1"
 
@@ -49,6 +51,8 @@ def create_app() -> FastAPI:
     app.include_router(product_router, prefix=API_V1_PREFIX)
     app.include_router(lead_brief_router, prefix=API_V1_PREFIX)
     app.include_router(discovery_router, prefix=API_V1_PREFIX)
+    app.include_router(templates_rules_router, prefix=API_V1_PREFIX)
+    app.include_router(proposal_draft_router, prefix=API_V1_PREFIX)
     app.include_router(admin_router, prefix=f"{API_V1_PREFIX}/admin")
 
     @app.on_event("startup")

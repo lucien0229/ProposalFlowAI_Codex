@@ -427,6 +427,20 @@ Ship the core value page: a rule-constrained, editable, versioned proposal draft
 - This phase is the product’s signature surface, so any spec-like UI failure is highly visible.
 - Keep rule presentation clear, but do not turn the page into a control panel jungle.
 
+**Plans:** 9/9 plans complete
+
+**Plans**
+
+- [ ] `07-01-PLAN.md` — freeze the failing API/browser contract surface for Templates & Rules and Proposal Draft
+- [ ] `07-02-PLAN.md` — implement templates, workspace rules, effective rules, and opportunity override APIs
+- [ ] `07-03-PLAN.md` — implement Proposal Draft current-resource, versioning, regenerate, export, and conflict-aware APIs
+- [ ] `07-04-PLAN.md` — ship the Proposal Draft and Templates & Rules route shells with browser state coverage
+- [ ] `07-05-PLAN.md` — build the editing-first Proposal Draft workspace, override flow, versions, and action states
+- [ ] `07-06-PLAN.md` — productize Templates & Rules editing and prove cross-surface rule refresh with full regression
+- [ ] `07-07-PLAN.md` — close backend truth gaps for empty proposal drafts, opt-in overrides, and live rule warnings
+- [ ] `07-08-PLAN.md` — replace mock-only Proposal Draft gap coverage with backend-backed browser proof
+- [ ] `07-09-PLAN.md` — close the Proposal Draft Playwright ready-state race and restore the full Phase 7 validation command under default workers
+
 ## Phase 8 — Follow-up Workspace
 
 **Goal**
